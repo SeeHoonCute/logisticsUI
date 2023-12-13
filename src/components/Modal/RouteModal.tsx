@@ -4,10 +4,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { makeStyles } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
-import { Button, Grid, Icon, IconButton, MenuItem, Select } from "@mui/material";
+import { Button, Grid, IconButton, MenuItem, Select } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
-import { BorderAllRounded, Padding } from "@mui/icons-material";
-import { race } from "redux-saga/effects";
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -25,9 +23,9 @@ interface IRouteModal {
     onClick: () => void;
 }
 
-const RouteModal = ({onClick}:IRouteModal) => {
+const RouteModal = ({ onClick }: IRouteModal) => {
     const classes = useStyles();
-    // };
+
     return (
         <Modal
             open={true}
@@ -40,12 +38,12 @@ const RouteModal = ({onClick}:IRouteModal) => {
                     <Grid className={classes.iconStyle}>
                         <Grid>
                             <Typography id="modal-modal-title" variant="h6" component="h2" fontWeight={600}>
-                            CHỈNH SỬA ĐƠN VỊ VẬN CHUYỂN
+                                CHỈNH SỬA ĐƠN VỊ VẬN CHUYỂN
                             </Typography>
                         </Grid>
                         <Grid>
                             <IconButton onClick={onClick}>
-                            <ClearIcon />
+                                <ClearIcon />
                             </IconButton>
                         </Grid>
                     </Grid>
@@ -69,7 +67,7 @@ const RouteModal = ({onClick}:IRouteModal) => {
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         Lý do
                     </Typography>
-                    <TextField required fullWidth id="fullWidth" sx={{mb:3}} placeholder="Nhập lý do"/>
+                    <TextField required fullWidth id="fullWidth" sx={{ mb: 3 }} placeholder="Nhập lý do" />
                     <Grid display={"flex"} justifyContent={"center"} className={classes.microButton}>
                         <Button
                             component="label"
@@ -84,7 +82,9 @@ const RouteModal = ({onClick}:IRouteModal) => {
         </Modal>
     );
 };
+
 export default RouteModal;
+
 const useStyles = makeStyles(() => ({
     addressSelect: {
         flexBasis: "60",
@@ -95,18 +95,14 @@ const useStyles = makeStyles(() => ({
     microButton: {
         marginTop: '10px',
     },
-    colorSpan:{
-        color:"#379AE6",
+    colorSpan: {
+        color: "#379AE6",
     },
-    editBox:{
-        margin:'15px',
+    editBox: {
+        margin: '15px',
     },
-    iconStyle:{
-        display:"flex",
-        justifyContent:"space-between",
+    iconStyle: {
+        display: "flex",
+        justifyContent: "space-between",
     }
-     
 }));
-
-
-
