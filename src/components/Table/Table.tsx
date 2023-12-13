@@ -14,6 +14,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Table } from "@mui/material";
+import { relative } from "path";
 
 export interface IRouteType {
     id: number;
@@ -65,8 +66,6 @@ const rows = [
     createData(11, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
 
 ];
-
-type Order = 'asc' | 'desc';
 
 interface HeadCell {
     disablePadding: boolean;
@@ -133,6 +132,7 @@ interface EnhancedTableHeaderProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableHeaderProps) {
+    const classes = useStyles();
     const { onSelectAllClick, numSelected, rowCount } =
         props;
 
@@ -140,13 +140,20 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
         <TableHead>
             <TableRow>
                 <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
+                    <div className={classes.firstHeaderWrapper}>
+                        <Checkbox
+                            sx={{
+                                position: "relative",
+                                bottom: "16px"
+                            }}
+                            color="primary"
+                            indeterminate={numSelected > 0 && numSelected < rowCount}
+                            checked={rowCount > 0 && numSelected === rowCount}
+                            onChange={onSelectAllClick}
+                            inputProps={{ 'aria-label': 'select all desserts' }}
+                        />
+                        <p className={`${classes.firstHeader} ${classes.header}`}>Chọn hết</p>
+                    </div>
                 </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
@@ -154,7 +161,9 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
                         align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                     >
-                        {headCell.label}
+                        <p className={classes.header}>
+                            {headCell.label}
+                        </p>
                     </TableCell>
                 ))}
             </TableRow>
@@ -258,7 +267,7 @@ const RouteTable = () => {
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-    const visibleRows = React.useMemo(() => rows,[]
+    const visibleRows = React.useMemo(() => rows, []
     );
 
     return (
@@ -292,7 +301,7 @@ const RouteTable = () => {
                                         selected={isItemSelected}
                                         sx={{ cursor: 'pointer' }}
                                     >
-                                        <TableCell padding="checkbox">
+                                        <TableCell align="center" padding="checkbox">
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -301,13 +310,41 @@ const RouteTable = () => {
                                                 }}
                                             />
                                         </TableCell>
-                                        <TableCell align="left">{row.routeId}</TableCell>
-                                        <TableCell align="left">{row.warehouse}</TableCell>
-                                        <TableCell align="left">{row.startTime}</TableCell>
-                                        <TableCell align="left">{row.endTime}</TableCell>
-                                        <TableCell align="left">{row.vehicleType}</TableCell>
-                                        <TableCell align="left">{row.vehicleStatus}</TableCell>
-                                        <TableCell align="left">{row.shipment}</TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.routeId}>
+                                                {row.routeId}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.warehouse}>
+                                                {row.warehouse}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.Time}>
+                                                {row.startTime}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.Time}>
+                                                {row.endTime}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.warehouse}>
+                                                {row.vehicleType}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.warehouse}>
+                                                {row.vehicleStatus}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <p className={classes.warehouse}>
+                                                {row.shipment}
+                                            </p>
+                                        </TableCell>
                                         <TableCell align="left">{row.vehicleNumber}</TableCell>
                                     </TableRow>
                                 );
@@ -340,5 +377,46 @@ const useStyles = makeStyles(() => ({
     },
     tableContainer: {
         fontSize: '12px',
+    },
+    firstHeaderWrapper: {
+        display: "flex",
+        flexDirection: "row",
+        //width: "30px"
+    },
+    firstHeader: {
+        position: "relative",
+        right: "13px"
+    },
+    header: {
+        fontFamily: "Lexend ,sans-serif",
+        fontSize: "14px",
+        fontWeight: "bold",
+        lineHeight: "22px",
+        color: "#5F5B66FF",
+    },
+    routeId: {
+        fontFamily: "Manrope ,sans-serif", /* Body */
+        fontSize: "14px",
+        fontWeight: 700,
+        lineHeight: "22px",
+        color: "#15ABFFFF",
+    },
+    warehouse: {
+        fontFamily: "Manrope ,sans-serif", /* Body */
+        fontSize: "12px",
+        fontWeight: 400,
+        lineHeight: "20px",
+        color: "#15ABFFFF",
+        background: "#F0F9FFFF",
+        borderRadius: "14px",
+        padding: "0 6px",
+        display: "inline-block"
+    },
+    Time: {
+        fontFamily: "Manrope ,sans-serif", /* Body */
+        fontSize: "14px",
+        fontWeight: 400,
+        lineHeight: "22px",
+        color: "#1A191DFF",
     }
 }));
