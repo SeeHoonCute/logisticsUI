@@ -16,10 +16,10 @@ export const Frame = () => {
                     <Header />
                 </Grid>
                 <Grid container>
-                    <Grid xs={0.5}>
+                    <Grid item xs={0.5}>
                         <Nav />
                     </Grid>
-                    <Grid xs={11.5}>
+                    <Grid item xs={11.5}>
                         <Grid item xs={12} className={classes.fillter}>
                             <Fillter />
                         </Grid>
