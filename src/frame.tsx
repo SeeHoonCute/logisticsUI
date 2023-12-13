@@ -24,7 +24,7 @@ export const Frame = () => {
                             <Fillter />
                         </Grid>
                         <Grid item xs={12} className={classes.table}>
-                            <RouteTable/>
+                            <RouteTable />
                             <Grid display={"flex"} justifyContent={"center"} item xs={12}>
                                 <Pagination count={10} variant="outlined" shape="rounded" />
                             </Grid>
@@ -35,6 +35,7 @@ export const Frame = () => {
         </>
     );
 };
+
 const useStyles = makeStyles(() => ({
     layOut: {
         margin: '0px',
@@ -46,7 +47,7 @@ const useStyles = makeStyles(() => ({
     fillter: {
         margin: '10px',
     },
-    table:{
-       
+    table: {
+
     }
 }))
