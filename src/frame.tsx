@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid, Pagination } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import Header from "./components/Header/Header";
@@ -6,8 +6,16 @@ import Nav from "./components/Nav/Nav";
 import Fillter from "./components/Fillter/Fillter";
 import SuggestionTable from "./components/Table/SuggestionTable";
 import RouteTable from "./components/Table/Table";
+import { useAppDispatch, useAppSelector } from "./hooks/hook";
+import { getRouteRequest, IRouteState } from "./store/route/reducer";
 
 export const Frame = () => {
+    const { routes } = useAppSelector(state => state.route) as IRouteState
+    const dispatct = useAppDispatch();
+    useEffect(() => {
+        dispatct(getRouteRequest())
+    }, [])
+
     const classes = useStyles();
     return (
         <>

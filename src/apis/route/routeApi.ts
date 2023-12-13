@@ -4,15 +4,15 @@ import { baseURL } from "../../utils/apiLink";
 
 const url = `${baseURL}/route`;
 
-const getRoute = async (): Promise<IRouteType> => {
+const getRoutes = async (): Promise<IRouteType[]> => {
     const response = await httpClient.get({
         url: url,
     });
-    return response.data.result as IRouteType;
+    return response.data.result as IRouteType[];
 };
 
 const routeApi = {
-    getRoute: getRoute,
+    getRoutes: getRoutes,
 };
 
 export default routeApi;
