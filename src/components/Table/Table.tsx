@@ -152,7 +152,7 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
                             onChange={onSelectAllClick}
                             inputProps={{ 'aria-label': 'select all desserts' }}
                         />
-                        <p className={`${classes.firstHeader} ${classes.header}`}>Chọn hết</p>
+                        <p className={`${classes.header} ${classes.firstHeader}`}>Chọn hết</p>
                     </div>
                 </TableCell>
                 {headCells.map((headCell) => (
@@ -168,60 +168,6 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
                 ))}
             </TableRow>
         </TableHead>
-    );
-}
-
-interface EnhancedTableToolbarProps {
-    numSelected: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
-
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography
-                    sx={{ flex: '1 1 100%', fontSize: '18px', fontWeight: 'bold' }}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    Danh sách tuyến
-                </Typography>
-            )}
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton>
-
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
     );
 }
 
@@ -273,7 +219,6 @@ const RouteTable = () => {
     return (
         <Box sx={{ width: '100%' }} className={classes.tableBox}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
                 <TableContainer className={classes.tableContainer}>
                     <Table
                         sx={{ minWidth: 700 }}
@@ -381,18 +326,20 @@ const useStyles = makeStyles(() => ({
     firstHeaderWrapper: {
         display: "flex",
         flexDirection: "row",
-        //width: "30px"
-    },
-    firstHeader: {
-        position: "relative",
-        right: "13px"
+        width: "100px"
     },
     header: {
         fontFamily: "Lexend ,sans-serif",
         fontSize: "14px",
-        fontWeight: "bold",
+        fontWeight: 400,
         lineHeight: "22px",
         color: "#5F5B66FF",
+    },
+    firstHeader: {
+        position: "relative",
+        right: "13px",
+        fontWeight: 600,
+        textWrap: "nowrap",
     },
     routeId: {
         fontFamily: "Manrope ,sans-serif", /* Body */
