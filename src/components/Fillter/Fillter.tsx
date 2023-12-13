@@ -4,36 +4,51 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import FormDate from "../FormDate/FormDate";
 import React from "react";
 import RouteModal from "../Modal/RouteModal";
-import data from "../../assets/data/provices.json"
+import province from "../../assets/data/provices.json"
+import dist from "../../assets/data/dist.json"
+import ward from "../../assets/data/ward.json"
 
 
 const Fillter = () => {
-    // console.log(data);
-    const keys = Object.keys(data);
-    // console.log(keys[0]); // 👉️ ['name', 'country']
-    // console.log(data["01"]);
-    
-    
-    //select
-    const [age, setAge] = React.useState('1111');
-    const handleChange = (event: SelectChangeEvent) => {
-        console.log(event);
-        
-        setAge(event.target.value as string);
-    };
+    //useState
+    const [age, setAge] = React.useState('11');
     const [open, setOpen] = React.useState(false);
+    const [nationId, setNationId] = React.useState('');
+    const [provinceId, setProvinceId] = React.useState('');
+    const [distId, setDistId] = React.useState('');
+    const [wardId, setWardId] = React.useState('');
+    const [startTime, setStartTime] = React.useState('');
+    const [endTime, setEndTime] = React.useState('');
+
+    //function
+    const handleChangeNational = (event: SelectChangeEvent) => {
+        setNationId(event.target.value as string);
+    };
+
+    const handleChangeProvince = (event: SelectChangeEvent) => {
+        setProvinceId(event.target.value as string);
+        setDistId('');
+        setWardId('');
+    };
+
+    const handleChangeDist = (event: SelectChangeEvent) => {
+        setDistId(event.target.value as string);
+        setWardId('');
+    };
+    const handleChangeWard = (event: SelectChangeEvent) => {
+        setWardId(event.target.value as string);
+    };
 
     const handleOpen = () => setOpen(true);
-    const handleSave = () => {
-        //xu ly
-        console.log('aasa');
+
+    const handleSaveInformation = () => {
         setOpen(false)
     };
 
     const classes = useStyles();
     return (
         <>
-            {open && <RouteModal  onClick={handleSave}/>}
+            {open && <RouteModal onClick={handleSaveInformation} />}
             <Grid container className={classes.container}>
                 <Grid item xs={2}>
                     <p className={classes.formHeader}>Thời gian</p>
@@ -56,53 +71,55 @@ const Fillter = () => {
                             className={classes.addressSelect}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={age}
-                            onChange={handleChange}
+                            value={nationId}
+                            onChange={handleChangeNational}
                         >
-                            
+                            <MenuItem value={1}>Viet Nam</MenuItem>
                         </Select>
                     </Grid>
                     <Grid className={classes.formItem} item xs={6}>
                         <p className={classes.formSubHeader}>Tỉnh:</p>
                         <Select
+                            disabled={nationId === ''}
                             className={classes.addressSelect}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={age}
-                            onChange={handleChange}
+                            value={provinceId}
+                            onChange={handleChangeProvince}
                         >
-                            {Object.keys(data).map((key : string) => (
-                                <MenuItem value={key}>{data[key as keyof typeof data].name as string}</MenuItem>
+                            {Object.keys(province).map((key: string) => (
+                                <MenuItem key={key} value={key}>{province[key as keyof typeof province].name as string}</MenuItem>
                             ))}
-                            
                         </Select>
                     </Grid>
                     <Grid className={classes.formItem} item xs={6}>
                         <p className={classes.formSubHeader}>Huyện:</p>
                         <Select
+                            disabled={provinceId === ''}
                             className={classes.addressSelect}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={age}
-                            onChange={handleChange}
+                            value={distId}
+                            onChange={handleChangeDist}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {Object.keys(dist).filter(value => dist[value as keyof typeof dist].parent_code == provinceId).map((key: string) => (
+                                <MenuItem value={key}>{dist[key as keyof typeof dist].name as string}</MenuItem>
+                            ))}
                         </Select>
                     </Grid>
                     <Grid className={classes.formItem} item xs={6}>
                         <p className={classes.formSubHeader}>Xã:</p>
                         <Select
+                            disabled={distId === ''}
                             className={classes.addressSelect}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={age}
-                            onChange={handleChange}
+                            value={wardId}
+                            onChange={handleChangeWard}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {Object.keys(ward).filter(value => ward[value as keyof typeof ward].parent_code == distId).map((key: string) => (
+                                <MenuItem value={key}>{ward[key as keyof typeof ward].name as string}</MenuItem>
+                            ))}
                         </Select>
                     </Grid>
                 </Grid>
@@ -113,7 +130,7 @@ const Fillter = () => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={age}
-                        onChange={handleChange}
+                        onChange={() => { }}
                     >
                         <MenuItem value={10}>Ten</MenuItem>
                         <MenuItem value={20}>Twenty</MenuItem>
@@ -128,7 +145,7 @@ const Fillter = () => {
                             variant="contained"
                             startIcon={<AddOutlinedIcon />}
                             sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
-                            >
+                        >
                             Gợi ý đơn vị vận chuyển
                         </Button>
                     </Grid>
@@ -158,10 +175,12 @@ const Fillter = () => {
         </>
     );
 };
+
 export default Fillter;
+
 const useStyles = makeStyles(() => ({
-    container:{
-        margin:"10px 0 0 10px",
+    container: {
+        margin: "10px 0 0 10px",
     },
     formHeader: {
         fontSize: "16px",
@@ -206,7 +225,7 @@ const useStyles = makeStyles(() => ({
         margin: "0 4px",
         maxWidth: "80%",
     },
-    containerItem:{
-        padding:"0px 10px",
+    containerItem: {
+        padding: "0px 10px",
     }
 }));
