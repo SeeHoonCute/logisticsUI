@@ -15,7 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Table } from "@mui/material";
 
-interface IRouteType {
+export interface IRouteType {
     id: number;
     routeId: string;
     warehouse: string;
