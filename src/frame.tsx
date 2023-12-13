@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid, Pagination } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import Header from "./components/Header/Header";
@@ -6,8 +6,16 @@ import Nav from "./components/Nav/Nav";
 import Fillter from "./components/Fillter/Fillter";
 import SuggestionTable from "./components/Table/SuggestionTable";
 import RouteTable from "./components/Table/Table";
+import { useAppDispatch, useAppSelector } from "./hooks/hook";
+import { getRouteRequest, IRouteState } from "./store/route/reducer";
 
 export const Frame = () => {
+    const { routes } = useAppSelector(state => state.route) as IRouteState
+    const dispatct = useAppDispatch();
+    useEffect(() => {
+        dispatct(getRouteRequest())
+    }, [])
+
     const classes = useStyles();
     return (
         <>
@@ -16,15 +24,15 @@ export const Frame = () => {
                     <Header />
                 </Grid>
                 <Grid container>
-                    <Grid xs={0.5}>
+                    <Grid item xs={0.5}>
                         <Nav />
                     </Grid>
-                    <Grid xs={11.5}>
+                    <Grid item xs={11.5}>
                         <Grid item xs={12} className={classes.fillter}>
                             <Fillter />
                         </Grid>
                         <Grid item xs={12} className={classes.table}>
-                            <RouteTable/>
+                            <RouteTable />
                             <Grid display={"flex"} justifyContent={"center"} item xs={12}>
                                 <Pagination count={10} variant="outlined" shape="rounded" />
                             </Grid>
@@ -35,6 +43,7 @@ export const Frame = () => {
         </>
     );
 };
+
 const useStyles = makeStyles(() => ({
     layOut: {
         margin: '0px',
@@ -46,7 +55,7 @@ const useStyles = makeStyles(() => ({
     fillter: {
         margin: '10px',
     },
-    table:{
-       
+    table: {
+
     }
 }))
