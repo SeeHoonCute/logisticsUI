@@ -32,6 +32,10 @@ const useStyles = makeStyles(() => ({
   datePicker: {
     "& div":{
       height: "32px",
+      fontFamily: "Manrope ,sans-serif",
+      fontSize: "12px",
+      fontWeight: 400,
+      lineHeight: "20px",
     }
   }
 }));
