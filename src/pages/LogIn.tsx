@@ -40,7 +40,7 @@ const LogInForm = () => {
         console.log('Failed:', errorInfo);
     };
 
-    
+
     const classes = useStyles();
     return (
         <>
