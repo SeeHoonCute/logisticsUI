@@ -34,7 +34,7 @@ export interface IRouteState {
 }
 
 const initialState: IRouteState = {
-    routes: new Array<IRouteType>,
+    routes: [],
     loading: false,
 }
 
