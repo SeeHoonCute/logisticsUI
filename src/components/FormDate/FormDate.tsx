@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
     "& div":{
       height: "32px",
       fontFamily: "Manrope ,sans-serif",
-      fontSize: "12px",
+      fontSize: "14px",
       fontWeight: 400,
       lineHeight: "20px",
     }

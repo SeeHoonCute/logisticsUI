@@ -1,9 +1,10 @@
+import React from "react";
 import { makeStyles } from "@material-ui/core";
 import { Button, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import FormDate from "../FormDate/FormDate";
-import React from "react";
 import RouteModal from "../Modal/RouteModal";
+import RouteInformationModal from "../Modal/RouteInformationModel";
 import province from "../../assets/data/provices.json"
 import dist from "../../assets/data/dist.json"
 import ward from "../../assets/data/ward.json"
@@ -11,7 +12,6 @@ import ward from "../../assets/data/ward.json"
 
 const Fillter = () => {
     //useState
-    const [age, setAge] = React.useState('11');
     const [open, setOpen] = React.useState(false);
     const [nationId, setNationId] = React.useState('');
     const [provinceId, setProvinceId] = React.useState('');
@@ -19,6 +19,7 @@ const Fillter = () => {
     const [wardId, setWardId] = React.useState('');
     const [startTime, setStartTime] = React.useState('');
     const [endTime, setEndTime] = React.useState('');
+    const [statusSelect,setStatusId] = React.useState('');
 
     //function
     const handleChangeNational = (event: SelectChangeEvent) => {
@@ -38,6 +39,9 @@ const Fillter = () => {
     const handleChangeWard = (event: SelectChangeEvent) => {
         setWardId(event.target.value as string);
     };
+    const handleChangeStatus = (event: SelectChangeEvent)=>{
+        setStatusId(event.target.value as string);
+    }
 
     const handleOpen = () => setOpen(true);
 
@@ -48,7 +52,7 @@ const Fillter = () => {
     const classes = useStyles();
     return (
         <>
-            {open && <RouteModal onClick={handleSaveInformation} />}
+            {open && <RouteInformationModal onClick={handleSaveInformation} />}
             <Grid container className={classes.container}>
                 <Grid item xs={2}>
                     <p className={classes.formHeader}>Thời gian</p>
@@ -129,12 +133,14 @@ const Fillter = () => {
                         className={classes.statusSelect}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={age}
-                        onChange={() => { }}
+                        value={statusSelect}
+                        onChange={handleChangeStatus}
                     >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        <MenuItem value={1}>Chưa chọn đơn vị vận chuyển</MenuItem>
+                        <MenuItem value={2}>Đã chọn đơn vị vận chuyển</MenuItem>
+                        <MenuItem value={3}>Đã tạo yêu cầu thuê xe</MenuItem>
+                        <MenuItem value={4}>Yêu cầu thuê xe bị hủy</MenuItem>
+                        <MenuItem value={5}>Yêu cầu thuê xe đã duyệt</MenuItem>
                     </Select>
                 </Grid>
                 <Grid item xs={2} className={classes.nameButton}>
