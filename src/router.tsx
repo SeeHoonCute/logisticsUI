@@ -1,20 +1,26 @@
 import { RouteObject } from "react-router-dom";
 import { Frame } from "./frame";
 import LogIn from "./pages/LogIn";
+import ProtectedRoute from "./router/ProtectedRoute";
 
-export const routes: RouteObject[]=[
+export enum UserRole {
+    USER = "user",
+    ADMIN = "admin"
+}
+
+export const routes: RouteObject[] = [
     {
-        path:"",
-        element: <Frame/>,
-        children:[
+        path: "",
+        element: <ProtectedRoute role={[UserRole.USER]} />,
+        children: [
             {
-                path:"",
-                element:"Home",
+                path: "",
+                element: <Frame />,
             }
         ]
     },
     {
-        path:"/login",
-        element: <LogIn/>,
+        path: "/login",
+        element: <LogIn />,
     },
 ];
