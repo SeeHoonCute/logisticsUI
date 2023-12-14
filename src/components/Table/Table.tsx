@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { Table } from "@mui/material";
+import { Table, TablePagination} from "@mui/material";
 import { relative } from "path";
 
 export interface IRouteType {
@@ -54,16 +54,13 @@ function createData(
 
 const rows = [
     createData(1, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(2, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(3, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
+    createData(2, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Chờ Duyệt", "Toàn Tín", "29C-888.88"),
+    createData(3, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Hủy", "Toàn Tín", "29C-888.88"),
     createData(4, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(5, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(6, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
+    createData(5, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Chờ Duyệt", "Toàn Tín", "29C-888.88"),
+    createData(6, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Hủy", "Toàn Tín", "29C-888.88"),
     createData(7, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
     createData(8, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(9, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(10, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(11, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
 
 ];
 
@@ -109,13 +106,13 @@ const headCells: readonly HeadCell[] = [
         id: 'vehicleStatus',
         numeric: true,
         disablePadding: false,
-        label: 'Tình trạng xe',
+        label: 'Trạng thái',
     },
     {
         id: 'shipment',
         numeric: true,
         disablePadding: false,
-        label: 'Đơn vị vận chuyển',
+        label: 'Đơn vị',
     },
     {
         id: 'vehicleNumber',
@@ -139,7 +136,8 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
+                <TableCell
+                sx={{padding:'0'}}>
                     <div className={classes.firstHeaderWrapper}>
                         <Checkbox
                             sx={{
@@ -157,6 +155,7 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
                 </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
+                        sx={{padding:'0px 0px 0px 10px'}}
                         key={headCell.id}
                         align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -215,11 +214,16 @@ const RouteTable = () => {
 
     const visibleRows = React.useMemo(() => rows, []
     );
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+      };
 
     return (
-        <Box sx={{ width: '100%' }} className={classes.tableBox}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <TableContainer className={classes.tableContainer}>
+        <Box sx={{ width: '100%'}} className={classes.tableBox}>
+            <Paper sx={{ width: '100%', mb: 2, boxShadow:'none' }}>
+                <TableContainer className={classes.tableContainer}
+                >
                     <Table
                         sx={{ minWidth: 700 }}
                         aria-labelledby="tableTitle"
@@ -246,7 +250,7 @@ const RouteTable = () => {
                                         selected={isItemSelected}
                                         sx={{ cursor: 'pointer' }}
                                     >
-                                        <TableCell align="center" padding="checkbox">
+                                        <TableCell align="center" padding="checkbox" sx={{padding:'0'}}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -255,42 +259,43 @@ const RouteTable = () => {
                                                 }}
                                             />
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.routeId}>
                                                 {row.routeId}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.warehouse}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.Time}>
                                                 {row.startTime}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.Time}>
                                                 {row.endTime}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.vehicleType}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.vehicleStatus}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.shipment}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left">{row.vehicleNumber}</TableCell>
+                                        <TableCell align="left" sx={{padding:'0'}}>
+                                            <p className={classes.Time}>{row.vehicleNumber}</p></TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -307,6 +312,12 @@ const RouteTable = () => {
                     </Table>
                 </TableContainer>
             </Paper>
+            {/* <TablePagination
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onRowsPerPage={handleChangeRowsPerPage}
+            /> */}
         </Box>
     )
 }
@@ -317,7 +328,7 @@ const useStyles = makeStyles(() => ({
     tableBox: {
         marginTop: "20px",
         maxWidth: "97%",
-        padding: '0px 10px',
+        // padding: '0px 10px',
         boxShadow: 'none',
     },
     tableContainer: {
@@ -334,34 +345,36 @@ const useStyles = makeStyles(() => ({
         fontWeight: 400,
         lineHeight: "22px",
         color: "#5F5B66FF",
+
     },
     firstHeader: {
         position: "relative",
         right: "13px",
         fontWeight: 600,
         textWrap: "nowrap",
+
     },
     routeId: {
-        fontFamily: "Manrope ,sans-serif", /* Body */
-        fontSize: "14px",
-        fontWeight: 700,
+        fontFamily: "Roboto ,sans-serif", /* Body */
+        fontSize: "12px",
+        fontWeight: 700,    
         lineHeight: "22px",
         color: "#15ABFFFF",
     },
     warehouse: {
-        fontFamily: "Manrope ,sans-serif", /* Body */
+        fontFamily: "Roboto ,sans-serif", /* Body */
         fontSize: "12px",
         fontWeight: 400,
         lineHeight: "20px",
-        color: "#15ABFFFF",
-        background: "#F0F9FFFF",
+        color: "#6D31ED",
+        background: "#F5F1FE",
         borderRadius: "14px",
         padding: "0 6px",
         display: "inline-block"
     },
     Time: {
-        fontFamily: "Manrope ,sans-serif", /* Body */
-        fontSize: "14px",
+        fontFamily: "Roboto ,sans-serif", /* Body */
+        fontSize: "12px",
         fontWeight: 400,
         lineHeight: "22px",
         color: "#1A191DFF",
