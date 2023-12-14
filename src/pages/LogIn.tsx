@@ -1,11 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 import logo from "../assets/images/logo-the-gioi-di-dong-mwg.png";
 import { CarouselCard } from "../components/LogIn/CarouselCard";
 import LogInBox from "../components/LogIn/LogInBox";
+import { useNavigate } from "react-router-dom";
+import { SwitchRouteByRole } from "../utils/SwitchRouteByRole";
 
 const LogInForm = () => {
-    
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const navigate = useNavigate()
+    const CheckLogin = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            localStorage.setItem("token", token)
+            SwitchRouteByRole(navigate, token)
+        }
+        setIsLoading(false)
+    }
+
+    useEffect(() => {
+        CheckLogin()
+    }, [])
+
+    const onFinish = async (values: any) => {
+        // var params: loginDTO = {
+        //     userName: values.username,
+        //     password: values.password
+        // }
+
+        // await authService.login(params).then((res) => {
+        //     localStorage.setItem("token", res)
+        //     SwitchRouteByRole(navigate, res)
+        // }).catch(() => {
+        //     alert("Login Fail ")
+        // })
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
+
+
     const classes = useStyles();
     return (
         <>
