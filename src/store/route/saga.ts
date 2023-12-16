@@ -18,8 +18,24 @@ function* getRoutes(action: BaseAction) {
     }
 }
 
+function* postRoutes(action: BaseAction) {
+    try {
+        const response: Array<IRouteType> = yield call(routeApi.createRoute,action.payload);
+
+        if (response) {
+            yield put(getRouteSuccess(response));
+        } else {
+            yield put(getRouteError());
+        }
+    } catch (e: any) {
+        console.log("getRouteError", e)
+        yield put(getRouteError());
+    }
+}
+
 function* routeSaga() {
     yield all([takeLatest(GET_ROUTE_REQUEST, getRoutes)]);
+    // yield all([takeLatest(POST_ROUTE_REQUEST, postRoutes)]);
 }
 
 export default routeSaga;

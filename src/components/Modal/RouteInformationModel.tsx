@@ -1,4 +1,3 @@
-import React from "react";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -9,21 +8,11 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Grid, Icon, IconButton, MenuItem, Select } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Grid, IconButton} from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 1000,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    borderRadius: '25px',
-    p: 4,
-};
+
 interface DetailRoute {
     id: number;
     detailRoute: string;
@@ -104,8 +93,8 @@ const rows = [
 const Data = [
     createDeliveryPoint(1, "#45893485", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00"),
     createDeliveryPoint(2, "#45893485", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00"),
-    createDeliveryPoint(3, "#45893485", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00"),
-    createDeliveryPoint(4, "#45893485", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00"),
+    // createDeliveryPoint(3, "#45893485", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00"),
+    // createDeliveryPoint(4, "#45893485", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00"),
 ]
 const MockData = [
     createCarRetailRequestList(1, "#45893485", "Lưu Vũ Ninh - 039560****", "Giao Hàng Nhanh", "Lưu Vũ Ninh - 039560****", "2002-05-01 00:00:00", "Duyệt"),
@@ -116,7 +105,14 @@ interface IRouteModal {
 
 const RouteInformationModal = ({ onClick }: IRouteModal) => {
     const classes = useStyles();
-    // };
+    // const apiRef = useGridApiRef();
+    // const [coordinates, setCoordinates] = React.useState({
+    //     rowIndex: 0,
+    //     colIndex: 0,
+    //   });
+    // React.useEffect(() => {
+    // apiRef.current.scoll(coordinates);
+    // });
     return (
         <Modal
             open={true}
@@ -138,7 +134,7 @@ const RouteInformationModal = ({ onClick }: IRouteModal) => {
                             </IconButton>
                         </Grid>
                     </Grid>
-                    <Grid display={"flex"} justifyContent={"center"}>
+                    <Grid display={"flex"} justifyContent={"space-between"} p={"0px 20px"}>
                         <Grid>
                             <Typography>Mã tuyến: </Typography>
                             <Typography>Điểm xuất phát:  </Typography>
@@ -149,11 +145,11 @@ const RouteInformationModal = ({ onClick }: IRouteModal) => {
                         {
                             rows.map((row) => (
                                 <Grid key={row.id}>
-                                    <Typography>{row.detailRoute}</Typography>
-                                    <Typography>{row.local}</Typography>
-                                    <Typography>{row.startTime}</Typography>
-                                    <Typography>{row.endTime}</Typography>
-                                    <Typography>{row.typeOfCar}</Typography>
+                                    <Typography color={'#15ABFF'} fontWeight={'bolder'}>{row.detailRoute}</Typography>
+                                    <Typography color={'#6D31ED'}>{row.local}</Typography>
+                                    <Typography color={'#37750C'}>{row.startTime}</Typography>
+                                    <Typography color={'#37750C'}>{row.endTime}</Typography>
+                                    <Typography color={'#F9623E'}>{row.typeOfCar}</Typography>
                                 </Grid>
                             ))
                         }
@@ -188,7 +184,7 @@ const RouteInformationModal = ({ onClick }: IRouteModal) => {
                                                     <TableCell component="th" scope="row">
                                                         {row.id}
                                                     </TableCell>
-                                                    <TableCell align="center">{row.deliveryPointId}</TableCell>
+                                                    <TableCell align="center" sx={{ fontWeight: 'bold', color: '#15ABFF' }}>{row.deliveryPointId}</TableCell>
                                                     <TableCell align="right">{row.address}</TableCell>
                                                     <TableCell align="right">{row.time}</TableCell>
                                                 </TableRow>
@@ -229,7 +225,7 @@ const RouteInformationModal = ({ onClick }: IRouteModal) => {
                                                     <TableCell component="th" scope="row">
                                                         {row.id}
                                                     </TableCell>
-                                                    <TableCell align="right">{row.carRetailId}</TableCell>
+                                                    <TableCell align="right" sx={{ fontWeight: 'bold', color: '#15ABFF' }}>{row.carRetailId}</TableCell>
                                                     <TableCell align="right">{row.inforSender}</TableCell>
                                                     <TableCell align="right">{row.shipping}</TableCell>
                                                     <TableCell align="right">{row.inforApprover}</TableCell>
@@ -244,6 +240,9 @@ const RouteInformationModal = ({ onClick }: IRouteModal) => {
                         </Accordion>
                     </Grid>
                 </Grid>
+                {/* <DataGridPro
+                    apiRef={apiRef}
+                /> */}
             </Box>
         </Modal>
     );
@@ -259,5 +258,15 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 1000,
+    height: 500,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+};
 

@@ -1,16 +1,20 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
+import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { Pagination, Table, Grid } from "@mui/material";
-import { useAppDispatch } from "../../hooks/hook";
-import { setRouteCount } from "../../store/route/reducer";
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import { Table, TablePagination} from "@mui/material";
+import { relative } from "path";
 
 export interface IRouteType {
     id: number;
@@ -133,7 +137,7 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
         <TableHead>
             <TableRow>
                 <TableCell
-                    sx={{ padding: '0' }}>
+                sx={{padding:'0'}}>
                     <div className={classes.firstHeaderWrapper}>
                         <Checkbox
                             sx={{
@@ -151,7 +155,7 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
                 </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
-                        sx={{ padding: '0px 0px 0px 10px' }}
+                        sx={{padding:'0px 0px 0px 10px'}}
                         key={headCell.id}
                         align={'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -173,7 +177,6 @@ const RouteTable = () => {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(4);
-    const disPatch = useAppDispatch();
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
@@ -184,7 +187,7 @@ const RouteTable = () => {
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, id: number, routeId: string) => {
+    const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
         const selectedIndex = selected.indexOf(id);
         let newSelected: readonly number[] = [];
 
@@ -201,7 +204,6 @@ const RouteTable = () => {
             );
         }
         setSelected(newSelected);
-        disPatch(setRouteCount(newSelected.length, routeId));
     };
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
@@ -215,11 +217,11 @@ const RouteTable = () => {
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
-    };
+      };
 
     return (
-        <Box sx={{ width: '100%' }} className={classes.tableBox}>
-            <Paper sx={{ width: '100%', mb: 2, boxShadow: 'none' }}>
+        <Box sx={{ width: '100%'}} className={classes.tableBox}>
+            <Paper sx={{ width: '100%', mb: 2, boxShadow:'none' }}>
                 <TableContainer className={classes.tableContainer}
                 >
                     <Table
@@ -240,7 +242,7 @@ const RouteTable = () => {
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(event) => handleClick(event, row.id, row.routeId)}
+                                        onClick={(event) => handleClick(event, row.id)}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
@@ -248,7 +250,7 @@ const RouteTable = () => {
                                         selected={isItemSelected}
                                         sx={{ cursor: 'pointer' }}
                                     >
-                                        <TableCell align="center" padding="checkbox" sx={{ padding: '0' }}>
+                                        <TableCell align="center" padding="checkbox" sx={{padding:'0'}}>
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -257,42 +259,42 @@ const RouteTable = () => {
                                                 }}
                                             />
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.routeId}>
                                                 {row.routeId}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.warehouse}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.Time}>
                                                 {row.startTime}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.Time}>
                                                 {row.endTime}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.vehicleType}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.vehicleStatus}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.warehouse}>
                                                 {row.shipment}
                                             </p>
                                         </TableCell>
-                                        <TableCell align="left" sx={{ padding: '0' }}>
+                                        <TableCell align="left" sx={{padding:'0'}}>
                                             <p className={classes.Time}>{row.vehicleNumber}</p></TableCell>
                                     </TableRow>
                                 );
@@ -310,9 +312,6 @@ const RouteTable = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-            <Grid display={"flex"} justifyContent={"center"} item xs={12}>
-                <Pagination count={10} variant="outlined" shape="rounded" />
-            </Grid>
             {/* <TablePagination
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
@@ -356,7 +355,7 @@ const useStyles = makeStyles(() => ({
     routeId: {
         fontFamily: "Roboto ,sans-serif", /* Body */
         fontSize: "12px",
-        fontWeight: 700,
+        fontWeight: 700,    
         lineHeight: "22px",
         color: "#15ABFFFF",
     },

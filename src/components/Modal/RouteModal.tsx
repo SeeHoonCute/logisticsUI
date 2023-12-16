@@ -1,4 +1,3 @@
-import React from "react";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -7,25 +6,14 @@ import TextField from '@mui/material/TextField';
 import { Button, Grid, IconButton, MenuItem, Select } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    borderRadius: '25px',
-    p: 4,
-};
-
 interface IRouteModal {
+    routeIdSelected: string;
     onClick: () => void;
+    onClose: () => void;
 }
 
-const RouteModal = ({ onClick }: IRouteModal) => {
+const RouteModal = ({ onClick, onClose,routeIdSelected}: IRouteModal) => {
     const classes = useStyles();
-
     return (
         <Modal
             open={true}
@@ -42,13 +30,13 @@ const RouteModal = ({ onClick }: IRouteModal) => {
                             </Typography>
                         </Grid>
                         <Grid>
-                            <IconButton onClick={onClick}>
+                            <IconButton onClick={onClose}>
                                 <ClearIcon />
                             </IconButton>
                         </Grid>
                     </Grid>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Mã tuyến <span className={classes.colorSpan}>{"#aasasda"}</span>
+                        Mã tuyến <span className={classes.colorSpan}>{routeIdSelected}</span>
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         Đơn vị vận chuyển
@@ -106,3 +94,14 @@ const useStyles = makeStyles(() => ({
         justifyContent: "space-between",
     }
 }));
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    borderRadius: '25px',
+    p: 4,
+};

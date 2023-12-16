@@ -1,6 +1,5 @@
-import React from "react";
 import IconButton from '@mui/material/IconButton';
-import { Box, InputAdornment, OutlinedInput, makeStyles }  from "@material-ui/core";
+import { Box, makeStyles }  from "@material-ui/core";
 import { Avatar, InputBase, Paper } from "@mui/material";
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';

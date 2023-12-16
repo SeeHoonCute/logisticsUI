@@ -2,8 +2,8 @@ import axios, { Method, AxiosResponse, ResponseType } from 'axios';
 
 interface Options {
     url: string;
-    data?: object | string;
-    params?: object;
+    data?: object | string; //body
+    params?: object; //param url
     signal?: AbortSignal;
     contentType?: string;
     responseType?: ResponseType;

@@ -4,6 +4,7 @@ import { IRouteType } from "../../components/Table/Table";
 export const GET_ROUTE_REQUEST = "GET_ROUTE_REQUEST";
 export const GET_ROUTE_SUCCESS = "GET_ROUTE_SUCCESS";
 export const GET_ROUTE_ERROR = "GET_ROUTE_ERROR";
+export const SET_ROUTE_COUNT = "SET_ROUTE_COUNT";
 
 export interface BaseAction {
     type: string;
@@ -27,15 +28,28 @@ export const getRouteError = (): BaseAction => {
         type: GET_ROUTE_ERROR
     };
 }
+export const setRouteCount = (count: number, routeId: string): BaseAction => {
+    return {
+        type: SET_ROUTE_COUNT,
+        payload: {
+            count: count,
+            routeId: routeId,
+        },
+    };
+}
 //
 export interface IRouteState {
     routes: Array<IRouteType>;
     loading: boolean;
+    routeCount: number;
+    routeIdSelected: string;
 }
 
 const initialState: IRouteState = {
     routes: [],
     loading: false,
+    routeCount: 0,
+    routeIdSelected: '',
 }
 
 //reducer function
@@ -56,6 +70,12 @@ const reducer = (state = initialState, action: BaseAction) => {
             return {
                 ...state,
                 loading: false,
+            }
+        case SET_ROUTE_COUNT:
+            return {
+                ...state,
+                routeCount: action.payload.count,
+                routeIdSelected: action.payload.count === 1 ? action.payload.routeId : '',
             }
         default:
             return state;
