@@ -1,21 +1,27 @@
 import { RouteObject } from "react-router-dom";
 import { Frame } from "./frame";
 import LogIn from "./pages/LogIn";
-import ProtectedRoute from "./router/ProtectedRoute";
+import Table from "./components/Table/Table"
+import ApproverTable from "./components/Table/ApproverTable";
 
-export enum UserRole {
-    USER = "user",
-    ADMIN = "admin"
-}
+// export enum UserRole {
+//     USER = "user",
+//     ADMIN = "admin"
+// }
 
 export const routes: RouteObject[] = [
     {
         path: "",
-        element: <ProtectedRoute role={[UserRole.USER]} />,
+        element:<Frame/>,
+        // element: <ProtectedRoute role={[UserRole.USER]} />,
         children: [
             {
                 path: "",
-                element: <Frame />,
+                element: <Table />,
+            },
+            {
+                path:"/shippingUnit",
+                element: <ApproverTable/>,
             }
         ]
     },

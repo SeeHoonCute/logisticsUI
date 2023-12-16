@@ -1,22 +1,19 @@
-import React, { useEffect } from "react";
-import { Grid, Pagination } from "@mui/material";
+import { Grid } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import Header from "./components/Header/Header";
 import Nav from "./components/Nav/Nav";
 import Fillter from "./components/Fillter/Fillter";
-import SuggestionTable from "./components/Table/SuggestionTable";
-import RouteTable from "./components/Table/Table";
-import { useAppDispatch, useAppSelector } from "./hooks/hook";
-import { getRouteRequest, IRouteState } from "./store/route/reducer";
+import { Outlet } from "react-router-dom";
 
 export const Frame = () => {
-    const { routes } = useAppSelector(state => state.route) as IRouteState
-    const dispatct = useAppDispatch();
-    useEffect(() => {
-        dispatct(getRouteRequest())
-    }, [])
+    // const { routes } = useAppSelector(state => state.route) as IRouteState
+    // const dispatct = useAppDispatch();
+    // useEffect(() => {
+    //     dispatct(getRouteRequest())
+    // }, [])
 
     const classes = useStyles();
+  
     return (
         <>
             <Grid container className={classes.layOut}>
@@ -32,10 +29,7 @@ export const Frame = () => {
                             <Fillter />
                         </Grid>
                         <Grid item xs={12} className={classes.table}>
-                            <RouteTable />
-                            <Grid display={"flex"} justifyContent={"center"} item xs={12}>
-                                <Pagination count={10} variant="outlined" shape="rounded" />
-                            </Grid>
+                            <Outlet/>
                         </Grid>
                     </Grid>
                 </Grid>

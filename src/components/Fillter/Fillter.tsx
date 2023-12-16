@@ -4,11 +4,11 @@ import { Button, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import FormDate from "../FormDate/FormDate";
 import RouteModal from "../Modal/RouteModal";
-import RouteInformationModal from "../Modal/RouteInformationModel";
-import province from "../../assets/data/provices.json"
-import dist from "../../assets/data/dist.json"
-import ward from "../../assets/data/ward.json"
-
+import province from "../../assets/data/provices.json";
+import dist from "../../assets/data/dist.json";
+import ward from "../../assets/data/ward.json";
+import Message, { MessageStatus } from "../Message/Message";
+import { useAppSelector } from "../../hooks/hook";
 
 const Fillter = () => {
     //useState
@@ -17,9 +17,14 @@ const Fillter = () => {
     const [provinceId, setProvinceId] = React.useState('');
     const [distId, setDistId] = React.useState('');
     const [wardId, setWardId] = React.useState('');
-    const [startTime, setStartTime] = React.useState('');
-    const [endTime, setEndTime] = React.useState('');
-    const [statusSelect,setStatusId] = React.useState('');
+    // const [startTime, setStartTime] = React.useState('');
+    // const [endTime, setEndTime] = React.useState('');
+    const [statusSelect, setStatusId] = React.useState('');
+    const [routeStatus, setrouteStatus] = React.useState(MessageStatus.initial);
+
+    const pathName = window.location.pathname;
+    const iShippingUnit = pathName.includes("shippingUnit");
+    const { routeCount, routeIdSelected } = useAppSelector(state => state.route);
 
     //function
     const handleChangeNational = (event: SelectChangeEvent) => {
@@ -36,10 +41,12 @@ const Fillter = () => {
         setDistId(event.target.value as string);
         setWardId('');
     };
+
     const handleChangeWard = (event: SelectChangeEvent) => {
         setWardId(event.target.value as string);
     };
-    const handleChangeStatus = (event: SelectChangeEvent)=>{
+
+    const handleChangeStatus = (event: SelectChangeEvent) => {
         setStatusId(event.target.value as string);
     }
 
@@ -47,12 +54,27 @@ const Fillter = () => {
 
     const handleSaveInformation = () => {
         setOpen(false)
+        if (true) {
+            setrouteStatus(MessageStatus.success);
+        }
+        else {
+            setrouteStatus(MessageStatus.error);
+        }
+    };
+
+    const resetSatus = () => {
+        setrouteStatus(MessageStatus.initial);
+    }
+
+    const handleCloseModal = () => {
+        setOpen(false);
     };
 
     const classes = useStyles();
     return (
         <>
-            {open && <RouteInformationModal onClick={handleSaveInformation} />}
+            {open && <RouteModal onClick={handleSaveInformation} onClose={handleCloseModal} routeIdSelected={routeIdSelected} />}
+            {routeStatus !== MessageStatus.initial && <Message status={routeStatus} onClick={resetSatus} />}
             <Grid container className={classes.container}>
                 <Grid item xs={2}>
                     <p className={classes.formHeader}>Thời gian</p>
@@ -106,7 +128,7 @@ const Fillter = () => {
                             value={distId}
                             onChange={handleChangeDist}
                         >
-                            {Object.keys(dist).filter(value => dist[value as keyof typeof dist].parent_code == provinceId).map((key: string) => (
+                            {Object.keys(dist).filter(value => dist[value as keyof typeof dist].parent_code === provinceId).map((key: string) => (
                                 <MenuItem value={key}>{dist[key as keyof typeof dist].name as string}</MenuItem>
                             ))}
                         </Select>
@@ -121,7 +143,7 @@ const Fillter = () => {
                             value={wardId}
                             onChange={handleChangeWard}
                         >
-                            {Object.keys(ward).filter(value => ward[value as keyof typeof ward].parent_code == distId).map((key: string) => (
+                            {Object.keys(ward).filter(value => ward[value as keyof typeof ward].parent_code === distId).map((key: string) => (
                                 <MenuItem value={key}>{ward[key as keyof typeof ward].name as string}</MenuItem>
                             ))}
                         </Select>
@@ -143,40 +165,45 @@ const Fillter = () => {
                         <MenuItem value={5}>Yêu cầu thuê xe đã duyệt</MenuItem>
                     </Select>
                 </Grid>
-                <Grid item xs={2} className={classes.nameButton}>
-                    <Grid className={classes.microButton}>
-                        <Button
-                            className={classes.microButton}
-                            component="label"
-                            variant="contained"
-                            startIcon={<AddOutlinedIcon />}
-                            sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
-                        >
-                            Gợi ý đơn vị vận chuyển
-                        </Button>
+                {
+                    iShippingUnit || <Grid item container xs={4}>
+                        <Grid item xs={6} className={classes.nameButton}>
+                            <Grid className={classes.microButton}>
+                                <Button
+                                    className={classes.microButton}
+                                    component="label"
+                                    variant="contained"
+                                    startIcon={<AddOutlinedIcon />}
+                                    sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
+                                >
+                                    Gợi ý đơn vị vận chuyển
+                                </Button>
+                            </Grid>
+                            <Grid className={classes.microButton}>
+                                <Button
+                                    disabled={routeCount !== 1}
+                                    component="label"
+                                    variant="contained"
+                                    startIcon={<AddOutlinedIcon />}
+                                    sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
+                                    onClick={handleOpen}>
+                                    Chọn đơn vị vận chuyển
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={6} className={classes.nameButton}>
+                            <Grid className={classes.microButton}>
+                                <Button
+                                    component="label"
+                                    variant="contained"
+                                    startIcon={<AddOutlinedIcon />}
+                                    sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
+                                    Tạo yêu cầu vận chuyển
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid className={classes.microButton}>
-                        <Button
-                            component="label"
-                            variant="contained"
-                            startIcon={<AddOutlinedIcon />}
-                            sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
-                            onClick={handleOpen}>
-                            Chọn đơn vị vận chuyển
-                        </Button>
-                    </Grid>
-                </Grid>
-                <Grid item xs={2} className={classes.nameButton}>
-                    <Grid className={classes.microButton}>
-                        <Button
-                            component="label"
-                            variant="contained"
-                            startIcon={<AddOutlinedIcon />}
-                            sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
-                            Tạo yêu cầu vận chuyển
-                        </Button>
-                    </Grid>
-                </Grid>
+                }
             </Grid>
         </>
     );
