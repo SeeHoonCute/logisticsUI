@@ -165,45 +165,60 @@ const Fillter = () => {
                         <MenuItem value={5}>Yêu cầu thuê xe đã duyệt</MenuItem>
                     </Select>
                 </Grid>
-                {
-                    iShippingUnit || <Grid item container xs={4}>
-                        <Grid item xs={6} className={classes.nameButton}>
-                            <Grid className={classes.microButton}>
-                                <Button
-                                    className={classes.microButton}
-                                    component="label"
-                                    variant="contained"
-                                    startIcon={<AddOutlinedIcon />}
-                                    sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
-                                >
-                                    Gợi ý đơn vị vận chuyển
-                                </Button>
-                            </Grid>
-                            <Grid className={classes.microButton}>
-                                <Button
-                                    disabled={routeCount !== 1}
-                                    component="label"
-                                    variant="contained"
-                                    startIcon={<AddOutlinedIcon />}
-                                    sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
-                                    onClick={handleOpen}>
-                                    Chọn đơn vị vận chuyển
-                                </Button>
-                            </Grid>
+                <Grid item container xs={4}>
+                    {iShippingUnit || <Grid item xs={6} className={classes.nameButton}>
+                        <Grid className={classes.microButton}>
+                            <Button
+                                fullWidth
+                                disabled={routeCount === 0}
+                                className={classes.microButton}
+                                component="label"
+                                variant="contained"
+                                startIcon={<AddOutlinedIcon />}
+                                sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
+                            >
+                                Gợi ý đơn vị vận chuyển
+                            </Button>
                         </Grid>
-                        <Grid item xs={6} className={classes.nameButton}>
-                            <Grid className={classes.microButton}>
-                                <Button
-                                    component="label"
-                                    variant="contained"
-                                    startIcon={<AddOutlinedIcon />}
-                                    sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
-                                    Tạo yêu cầu vận chuyển
-                                </Button>
-                            </Grid>
+                        <Grid className={classes.microButton}>
+                            <Button
+                                fullWidth
+                                disabled={routeCount !== 1}
+                                component="label"
+                                variant="contained"
+                                startIcon={<AddOutlinedIcon />}
+                                sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
+                                onClick={handleOpen}>
+                                Chọn đơn vị vận chuyển
+                            </Button>
                         </Grid>
                     </Grid>
-                }
+                    }
+                    <Grid item xs={6} className={classes.nameButton}>
+                        {iShippingUnit || <Grid className={classes.microButton}>
+                            <Button
+                                fullWidth
+                                disabled={routeCount === 0}
+                                component="label"
+                                variant="contained"
+                                startIcon={<AddOutlinedIcon />}
+                                sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
+                                Tạo yêu cầu vận chuyển
+                            </Button>
+                        </Grid>
+                        }
+                        {/* <Grid className={classes.microButton}>
+                            <Button
+                                fullWidth
+                                component="label"
+                                variant="contained"
+                                startIcon={<AddOutlinedIcon />}
+                                sx={{ textTransform: 'unset', backgroundColor: '#6D31ED', justifyContent:'left' }}>
+                                Lọc yêu cầu
+                            </Button>
+                        </Grid> */}
+                    </Grid>
+                </Grid>
             </Grid>
         </>
     );
@@ -229,6 +244,7 @@ const useStyles = makeStyles(() => ({
     },
     microButton: {
         marginTop: '5px',
+        width: '218px',
     },
     dateWrapper: {
         display: 'flex',

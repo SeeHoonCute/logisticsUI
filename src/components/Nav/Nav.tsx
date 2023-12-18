@@ -6,9 +6,12 @@ import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFi
 
 const Navigation = () => {
     const classes = useStyles();
+    const pathName = window.location.pathname;
+    const iShippingUnit = pathName.includes("shippingUnit");
     return (
         <>
-            <Grid container className={classes.navigation}>
+            {
+                iShippingUnit || <Grid container className={classes.navigation}>
                 <Grid className={classes.titleIcon}>
                     <IconButton type="button" sx={{ p: '0px 10px' }}>
                         <RouteOutlinedIcon
@@ -21,7 +24,9 @@ const Navigation = () => {
                     Tuyến
                 </Grid>
             </Grid>
-            <Grid container className={classes.navigation}>
+            }
+            {
+                iShippingUnit && <Grid container className={classes.navigation}>
                 <Grid className={classes.titleIcon}>
                     <IconButton type="button" sx={{ p: '0px 10px' }}>
                         <DirectionsCarFilledOutlinedIcon
@@ -34,6 +39,7 @@ const Navigation = () => {
                     Thuê xe
                 </Grid>
             </Grid>
+            }
         </>
     );
 };
