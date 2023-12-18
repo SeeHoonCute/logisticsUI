@@ -28,12 +28,14 @@ export const getRouteError = (): BaseAction => {
         type: GET_ROUTE_ERROR
     };
 }
+// routeId: Array<string>
 export const setRouteCount = (count: number, routeId: string): BaseAction => {
     return {
         type: SET_ROUTE_COUNT,
         payload: {
             count: count,
             routeId: routeId,
+
         },
     };
 }

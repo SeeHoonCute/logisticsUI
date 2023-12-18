@@ -179,9 +179,11 @@ const RouteTable = () => {
         if (event.target.checked) {
             const newSelected = rows.map((n) => n.id);
             setSelected(newSelected);
+            disPatch(setRouteCount(newSelected.length, 'null'));
             return;
         }
         setSelected([]);
+        disPatch(setRouteCount(0, 'null'));
     };
 
     const handleClick = (event: React.MouseEvent<unknown>, id: number, routeId: string) => {

@@ -12,7 +12,7 @@ interface IRouteModal {
     onClose: () => void;
 }
 
-const RouteModal = ({ onClick, onClose,routeIdSelected}: IRouteModal) => {
+const RouteModal = ({ onClick, onClose, routeIdSelected}: IRouteModal) => {
     const classes = useStyles();
     return (
         <Modal
