@@ -5,41 +5,82 @@ import { ClearIcon } from '@mui/x-date-pickers';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
-import DriverInformation from './DriverInformation';
-import { SettingsCellOutlined } from '@mui/icons-material';
+import DriverInformationModal from './DriverInformation';
+
 interface IVehicleInformation {
-    onClick: () => void;
+    onClick: (rows: DriverInformation[], plate: string) => void;
     onClose: () => void;
 }
 
-interface DriverInformation {
+export interface DriverInformation {
+    id: number;
     name: string;
     cmnd: string;
     phone: string;
 }
 
-const createDriverInformation = (
-    name: string,
-    cmnd: string,
-    phone: string,
-): DriverInformation => {
-    return {
-        name,
-        cmnd,
-        phone,
-    }
-};
-const Data = [
-    createDriverInformation('Nguyễn Hoàng Vũ', '4930678349', '0962783294'),
-    createDriverInformation('Nguyễn Đăng Khôi', '4930678349', '0962783294'),
+// const createDriverInformation = (
+//     name: string,
+//     cmnd: string,
+//     phone: string,
+// ): DriverInformation => {
+//     return {
+//         id
+//         name,
+//         cmnd,
+//         phone,
+//     }
+// };
+const Data: DriverInformation[] = [
+    // createDriverInformation('Nguyễn Hoàng Vũ', '4930678349', '0962783294'),
+    // createDriverInformation('Nguyễn Đăng Khôi', '4930678349', '0962783294'),
 ]
 const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
+    const [currentId, setCurrentId] = React.useState(0);
+    const [plate, setPlate] = React.useState('');
+    const [newDriver, setNewDriver] = React.useState<DriverInformation[]>(Data);
+    const [updateDriver, setUpdateDriver] = React.useState<DriverInformation | undefined>(undefined);
+    const handleOpen = (row?: DriverInformation) => {
+        if (row) {
+            setUpdateDriver(row);
+        }
         setOpen(true);
     }
-    const handleSaveInformation = () => {
+
+    const handleDelete = (row: DriverInformation) => {
+        let newNew = [...newDriver];
+        newNew = newNew.filter(d => d.id !== row.id);
+        newNew = newNew.map(d => {
+            if (d.id >= row.id) {
+                return {
+                    ...d,
+                    id: d.id - 1,
+                } as DriverInformation
+            } else return d
+        });
+        setNewDriver([...newNew]);
+        setCurrentId(currentId - 1)
+    }
+
+
+    const handleSaveInformation = (driver: DriverInformation) => {
+        //if update
+        if (driver.id <= currentId) {
+            let newNew = [...newDriver];
+            newNew = newNew.map(d => {
+                if (d.id === driver.id) {
+                    return driver
+                } else return d;
+            });
+            setUpdateDriver(undefined);
+            setNewDriver([...newNew]);
+        } else {
+            setNewDriver([...newDriver, driver]);
+            // setUpdateDriver(undefined);
+            setCurrentId(currentId + 1);
+        }
         setOpen(false);
     };
     const handleCloseInformation = () => {
@@ -47,7 +88,7 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
     };
 
     return (
-        <> {open && <DriverInformation onClick={handleSaveInformation} onClose={handleCloseInformation} />}
+        <> {open && <DriverInformationModal currentId={currentId} onClick={handleSaveInformation} onClose={handleCloseInformation} updateDriver={updateDriver} />}
             <Modal
                 open={true}
                 onClose={onClose}
@@ -90,7 +131,7 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
                                 Nhập thông tin xe
                             </Typography>
                             <Grid ml={10} mr={10}>
-                                <TextField id="standard-basic" fullWidth label="Biển số xe" variant="standard" size='small' />
+                                <TextField value={plate} onChange={(e)=>setPlate(e.target.value)} id="standard-basic" fullWidth label="Biển số xe" variant="standard" size='small' />
                             </Grid>
                             <Grid container mt={2}>
                                 <Grid item xs={8}>
@@ -100,7 +141,7 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
                                 </Grid>
                                 <Grid item xs={4} mt={1}>
                                     <Button
-                                        onClick={handleOpen}
+                                        onClick={() => handleOpen()}
                                         sx={{ textTransform: 'unset' }}
                                         color="secondary"
                                         startIcon={<AddIcon fontSize="small" />}>
@@ -118,7 +159,7 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {Data.map((row) => (
+                                        {newDriver.map((row) => (
                                             <TableRow
                                                 key={row.name}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -129,12 +170,12 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
                                                 <TableCell align="right">{row.cmnd}</TableCell>
                                                 <TableCell align="right">{row.phone}</TableCell>
                                                 <TableCell align="right">
-                                                    <IconButton color="primary" size="small" onClick={handleOpen}>
+                                                    <IconButton color="primary" size="small" onClick={() => handleOpen(row)}>
                                                         <BorderColorIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    <IconButton color="error" size="small">
+                                                    <IconButton color="error" size="small" onClick={() => handleDelete(row)}>
                                                         <DeleteIcon fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>
@@ -148,7 +189,7 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
                             <Button
                                 component="label"
                                 variant="contained"
-                                onClick={onClick}
+                                onClick={() => onClick(newDriver, plate)}
                                 sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
                                 Xác nhận
                             </Button>

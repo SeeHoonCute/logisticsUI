@@ -11,10 +11,12 @@ export interface BaseAction {
     payload?: any;
 }
 
+
 //action
-export const getRouteRequest = (): BaseAction => {
+export const getRouteRequest = (filter?: any): BaseAction => {
     return {
-        type: GET_ROUTE_REQUEST
+        type: GET_ROUTE_REQUEST,
+        payload: filter
     };
 }
 export const getRouteSuccess = (route: Array<IRouteType>): BaseAction => {
@@ -66,7 +68,10 @@ const reducer = (state = initialState, action: BaseAction) => {
             return {
                 ...state,
                 loading: false,
-                routes: action.payload,
+                routes: (action.payload as Array<IRouteType>).map((x, index) => ({
+                    ...x,
+                    id: index + 1,
+                })),
             }
         case GET_ROUTE_ERROR:
             return {

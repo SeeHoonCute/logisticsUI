@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { Table, Grid, Button, TablePagination } from "@mui/material";
-import VehicleInformation from "../Modal/vehicleInformation";
+import VehicleInformation, { DriverInformation } from "../Modal/vehicleInformation";
 import { MessageStatus } from "../Message/Message";
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
@@ -17,6 +17,8 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { requestCarrierRequest } from "../../store/carrier/reducer";
+import { useAppDispatch } from "../../hooks/hook";
 
 export interface IRequestType {
     id: number;
@@ -55,26 +57,26 @@ function createData(
 }
 
 const rows = [
-    createData(1, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(2, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(3, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(4, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(5, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(6, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(7, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(8, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(9, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(10, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(11, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(12, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(13, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(14, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(15, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(16, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(17, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(18, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(19, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
-    createData(20, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Duyệt"),
+    createData(1, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
+    createData(2, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(3, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
+    createData(4, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(5, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(6, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
+    createData(7, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(8, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(9, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(10, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
+    createData(11, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(12, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(13, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
+    createData(14, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
+    createData(15, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(16, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(17, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(18, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(19, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
+    createData(20, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
 ];
 
 interface HeadCell {
@@ -244,6 +246,9 @@ const ApproverTable = () => {
     const [openAccept, setOpenAccept] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(8);
     const [requestStatus, setrequestStatus] = React.useState(MessageStatus.initial);
+    const [rowId, setRowId] = React.useState('');
+
+    const dispatch = useAppDispatch();
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -262,14 +267,25 @@ const ApproverTable = () => {
         setPage(0);
     };
 
-    const handleOpenAccept = () => {
+    const handleOpenAccept = (id: string) => {
         setOpenAccept(true);
+        setRowId(id);
     }
     const handleCloseAccept = () => {
         setOpenAccept(false);
     }
-    const handleSaveInformation = () => {
+    const handleSaveInformation = (rows: DriverInformation[], plate: string) => {
         setOpenAccept(false)
+        dispatch(requestCarrierRequest({
+            routeid: rowId,
+            type: true,
+            driverinfo: rows.map(d => ({
+                citizenIdentificationCard: d.cmnd,
+                name: d.name,
+                phoneNumber: d.phone
+            })),
+            vehicleinfo: plate
+        }))
         if (true) {
             setrequestStatus(MessageStatus.success);
         }
@@ -284,6 +300,9 @@ const ApproverTable = () => {
             return;
         }
         setSelected([]);
+    };
+    const handleCancel = () => {
+        console.log("cc c")
     };
 
     const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
@@ -388,20 +407,26 @@ const ApproverTable = () => {
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <Button
-                                                    onClick={handleOpenAccept}
-                                                    variant="contained"
+                                                    disabled={row.status === "Hủy"}
+                                                    onClick={row.status === "Xác nhận" ? () => { } : () => handleOpenAccept(row.requestId)}
+                                                    variant="outlined"
                                                     size="small"
-                                                    sx={{ textTransform: 'unset', borderRadius: '20px' }}>
-                                                    Xác nhận
+                                                    sx={row.status === "Xác nhận" ? { textTransform: 'unset', borderRadius: '20px', color: "#37750C", backgroundColor: '#ffff' } : { textTransform: 'unset', borderRadius: '20px', }}
+                                                >
+                                                    {row.status === "Xác nhận" ? 'Đã xác nhận' : "Xác nhận"}
                                                 </Button>
+
+
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <Button
+                                                    disabled={row.status === "Xác nhận"}
+                                                    onClick={row.status === "Hủy" ? () => { } : handleCancel}
                                                     variant="outlined"
                                                     color="error"
                                                     size="small"
                                                     sx={{ textTransform: 'unset', borderRadius: '20px' }}>
-                                                    Hủy yêu cầu
+                                                    {row.status === "Hủy" ? "Đã Hủy" : "Hủy yêu cầu"}
                                                 </Button>
                                             </TableCell>
 

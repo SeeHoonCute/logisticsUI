@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import Box from '@mui/material/Box';
 import TableBody from '@mui/material/TableBody';
@@ -9,56 +9,56 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { Pagination, Table, Grid } from "@mui/material";
-import { useAppDispatch } from "../../hooks/hook";
-import { setRouteCount } from "../../store/route/reducer";
+import { useAppDispatch, useAppSelector } from "../../hooks/hook";
+import { setRouteCount, getRouteRequest } from "../../store/route/reducer";
 
 export interface IRouteType {
     id: number;
     routeId: string;
-    warehouse: string;
+    departureLocationName: string;
     startTime: string;
     endTime: string;
-    vehicleType: string;
-    vehicleStatus: string;
-    shipment: string;
-    vehicleNumber: string;
+    vehicleType: string;//
+    status: string;
+    carrier: string;
+    licenseplate: string;
 }
 
 function createData(
     id: number,
     routeId: string,
-    warehouse: string,
+    departureLocationName: string,
     startTime: string,
     endTime: string,
     vehicleType: string,
-    vehicleStatus: string,
-    shipment: string,
-    vehicleNumber: string
+    status: string,
+    carrier: string,
+    licenseplate: string
 ): IRouteType {
     return {
         id,
         routeId,
-        warehouse,
+        departureLocationName,
         startTime,
         endTime,
         vehicleType,
-        vehicleStatus,
-        shipment,
-        vehicleNumber,
+        status,
+        carrier,
+        licenseplate,
     };
 }
 
-const rows = [
-    createData(1, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(2, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Chờ Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(3, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Hủy", "Toàn Tín", "29C-888.88"),
-    createData(4, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(5, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Chờ Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(6, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Hủy", "Toàn Tín", "29C-888.88"),
-    createData(7, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
-    createData(8, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
+// const rows = [
+//     createData(1, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
+//     createData(2, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Chờ Duyệt", "Toàn Tín", "29C-888.88"),
+//     createData(3, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Hủy", "Toàn Tín", "29C-888.88"),
+//     createData(4, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
+//     createData(5, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Chờ Duyệt", "Toàn Tín", "29C-888.88"),
+//     createData(6, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Hủy", "Toàn Tín", "29C-888.88"),
+//     createData(7, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
+//     createData(8, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
 
-];
+// ];
 
 interface HeadCell {
     disablePadding: boolean;
@@ -75,7 +75,7 @@ const headCells: readonly HeadCell[] = [
         label: 'Mã tuyến',
     },
     {
-        id: 'warehouse',
+        id: 'departureLocationName',
         numeric: true,
         disablePadding: false,
         label: 'Kho xuất',
@@ -99,19 +99,19 @@ const headCells: readonly HeadCell[] = [
         label: 'Loại xe',
     },
     {
-        id: 'vehicleStatus',
+        id: 'status',
         numeric: true,
         disablePadding: false,
         label: 'Trạng thái',
     },
     {
-        id: 'shipment',
+        id: 'carrier',
         numeric: true,
         disablePadding: false,
         label: 'Đơn vị',
     },
     {
-        id: 'vehicleNumber',
+        id: 'licenseplate',
         numeric: true,
         disablePadding: false,
         label: 'Biển số xe',
@@ -174,10 +174,15 @@ const RouteTable = () => {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(4);
     const disPatch = useAppDispatch();
+    const { routes } = useAppSelector(state => state.route)
+
+    useEffect(() => {
+        disPatch(getRouteRequest())
+    }, [])
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = routes.map((n) => n.id);
             setSelected(newSelected);
             disPatch(setRouteCount(newSelected.length, 'null'));
             return;
@@ -210,10 +215,10 @@ const RouteTable = () => {
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - routes.length) : 0;
 
-    const visibleRows = React.useMemo(() => rows, []
-    );
+    // const visibleRows = React.useMemo(() => routes, []
+    // );
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -232,10 +237,10 @@ const RouteTable = () => {
                         <EnhancedTableHead
                             numSelected={selected.length}
                             onSelectAllClick={handleSelectAllClick}
-                            rowCount={rows.length}
+                            rowCount={routes.length}
                         />
                         <TableBody>
-                            {visibleRows.map((row, index) => {
+                            {routes.map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -265,8 +270,8 @@ const RouteTable = () => {
                                             </p>
                                         </TableCell>
                                         <TableCell align="left" sx={{ padding: '0' }}>
-                                            <p className={classes.warehouse}>
-                                                {row.warehouse}
+                                            <p className={classes.departureLocationName}>
+                                                {row.departureLocationName}
                                             </p>
                                         </TableCell>
                                         <TableCell align="left" sx={{ padding: '0' }}>
@@ -280,22 +285,22 @@ const RouteTable = () => {
                                             </p>
                                         </TableCell>
                                         <TableCell align="left" sx={{ padding: '0' }}>
-                                            <p className={classes.warehouse}>
+                                            <p className={classes.departureLocationName}>
                                                 {row.vehicleType}
                                             </p>
                                         </TableCell>
                                         <TableCell align="left" sx={{ padding: '0' }}>
-                                            <p className={classes.warehouse}>
-                                                {row.vehicleStatus}
+                                            <p className={classes.departureLocationName}>
+                                                {row.status}
                                             </p>
                                         </TableCell>
                                         <TableCell align="left" sx={{ padding: '0' }}>
-                                            <p className={classes.warehouse}>
-                                                {row.shipment}
+                                            <p className={classes.departureLocationName}>
+                                                {row.carrier}
                                             </p>
                                         </TableCell>
                                         <TableCell align="left" sx={{ padding: '0' }}>
-                                            <p className={classes.Time}>{row.vehicleNumber}</p></TableCell>
+                                            <p className={classes.Time}>{row.licenseplate}</p></TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -362,7 +367,7 @@ const useStyles = makeStyles(() => ({
         lineHeight: "22px",
         color: "#15ABFFFF",
     },
-    warehouse: {
+    departureLocationName: {
         fontFamily: "Roboto ,sans-serif", /* Body */
         fontSize: "12px",
         fontWeight: 400,

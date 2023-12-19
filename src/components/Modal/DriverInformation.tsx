@@ -1,14 +1,32 @@
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { Modal, Box, Typography, Button, Grid, IconButton, TextField } from '@mui/material';
 import { ClearIcon } from '@mui/x-date-pickers';
+import { DriverInformation } from './vehicleInformation';
 interface IVehicleInformation {
-    onClick: () => void;
+    currentId: number;
+    updateDriver?: DriverInformation;
+    onClick: (driver: DriverInformation) => void;
     onClose: () => void;
 }
 
 
-const DriverInformation = ({ onClick, onClose }: IVehicleInformation) => {
+const DriverInformationModal = ({ currentId, updateDriver, onClick, onClose }: IVehicleInformation) => {
+    //const [currentId, setCurrentId] = React.useState(0);
+    const [name, setName] = React.useState('');
+    const [cmnd, setCMND] = React.useState('');
+    const [phoneNumber, setPhoneNumber] = React.useState('');
     const classes = useStyles();
+
+    useEffect(() => {
+        if (updateDriver) {
+            setName(updateDriver.name);
+            setCMND(updateDriver.cmnd);
+            setPhoneNumber(updateDriver.phone);
+        }
+
+    }, [])
+
     return (
         <>
             <Modal
@@ -33,21 +51,26 @@ const DriverInformation = ({ onClick, onClose }: IVehicleInformation) => {
                         </Grid>
                         <Grid container>
                             <Grid item xs={6}>
-                                <TextField required id="outlined-basic" label="Họ và tên" placeholder="Nguyễn Văn Thành" variant="outlined" size='small'/>
+                                <TextField value={name} onChange={(e) => setName(e.target.value)} required id="outlined-basic" label="Họ và tên" placeholder="Nguyễn Văn Thành" variant="outlined" size='small' />
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField required id="outlined-basic" label="CMND/CCCD" placeholder="096304592784" variant="outlined" size='small'/>
+                                <TextField value={cmnd} onChange={(e) => setCMND(e.target.value)} required id="outlined-basic" label="CMND/CCCD" placeholder="096304592784" variant="outlined" size='small' />
                             </Grid>
                         </Grid>
                         <Grid mt={2} mb={4}>
-                            <TextField required id="outlined-basic" label="Số điện thoại" placeholder="0358927632" variant="outlined" size='small' />
+                            <TextField value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required id="outlined-basic" label="Số điện thoại" placeholder="0358927632" variant="outlined" size='small' />
                         </Grid>
 
                         <Grid display={"flex"} justifyContent={"center"} className={classes.microButton}>
                             <Button
                                 component="label"
                                 variant="contained"
-                                onClick={onClick}
+                                onClick={() => onClick({
+                                    id: updateDriver ? updateDriver.id : currentId + 1,
+                                    name: name,
+                                    cmnd: cmnd,
+                                    phone: phoneNumber,
+                                })}
                                 sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
                                 Lưu thông tin
                             </Button>
@@ -58,7 +81,7 @@ const DriverInformation = ({ onClick, onClose }: IVehicleInformation) => {
         </>
     )
 };
-export default DriverInformation;
+export default DriverInformationModal;
 const useStyles = makeStyles(() => ({
     addressSelect: {
         flexBasis: "60",

@@ -4,32 +4,30 @@ import { baseURL } from "../../utils/apiLink";
 
 const url = `${baseURL}/route`;
 
-const getRoutes = async (): Promise<IRouteType[]> => {
-    const response = await httpClient.get({
-        url: url,
-    });
-    return response.data.result as IRouteType[];
-};
-
-const createRoute = async (newRoute: IRouteType): Promise<string> => {
+const getRoutes = async (filter: any): Promise<IRouteType[]> => {
     const response = await httpClient.post({
         url: url,
-        data: newRoute,
+        data: filter ?? {
+            data: {
+                fromDate: "2023-12-05"
+                // "endDate" : "2023-12-19",
+                // "location" : {
+                //     "countryId" : 84,
+                //     "provinceId": 21,
+                //     "districtId" : 36,
+                //     "communeId" : 7
+                // },
+                // "status" : -2
+            }
+        },
     });
-    return response.data.result as string;
+    console.log('response', response)
+    return response.data as IRouteType[];
 };
 
-const deleteRoute = async (id: string): Promise<string> => {
-    const response = await httpClient.delete({
-        url: url + '/' + id,
-    });
-    return response.data.result as string;
-};
 
 const routeApi = {
     getRoutes: getRoutes,
-    createRoute: createRoute,
-    deleteRoutesssssss :deleteRoute,
 };
 
 export default routeApi;
