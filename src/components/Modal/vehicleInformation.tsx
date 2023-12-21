@@ -1,13 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { Modal, Box, Typography, Button, Grid, IconButton, Select, MenuItem, TextField, Container, TableContainer, Table, TableHead, TableRow, TableCell, Paper, TableBody } from '@mui/material';
+import { Modal, Box, Typography, Button, Grid, IconButton, TextField, Container, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { ClearIcon } from '@mui/x-date-pickers';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AddIcon from '@mui/icons-material/Add';
 import DriverInformationModal from './DriverInformation';
+import { IRequestType } from '../Table/ApproverTable';
 
 interface IVehicleInformation {
+    request: IRequestType;
     onClick: (rows: DriverInformation[], plate: string) => void;
     onClose: () => void;
 }
@@ -19,28 +21,12 @@ export interface DriverInformation {
     phone: string;
 }
 
-// const createDriverInformation = (
-//     name: string,
-//     cmnd: string,
-//     phone: string,
-// ): DriverInformation => {
-//     return {
-//         id
-//         name,
-//         cmnd,
-//         phone,
-//     }
-// };
-const Data: DriverInformation[] = [
-    // createDriverInformation('Nguyễn Hoàng Vũ', '4930678349', '0962783294'),
-    // createDriverInformation('Nguyễn Đăng Khôi', '4930678349', '0962783294'),
-]
-const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
+const VehicleInformation = ({ request, onClick, onClose }: IVehicleInformation) => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [currentId, setCurrentId] = React.useState(0);
     const [plate, setPlate] = React.useState('');
-    const [newDriver, setNewDriver] = React.useState<DriverInformation[]>(Data);
+    const [newDriver, setNewDriver] = React.useState<DriverInformation[]>([]);
     const [updateDriver, setUpdateDriver] = React.useState<DriverInformation | undefined>(undefined);
     const handleOpen = (row?: DriverInformation) => {
         if (row) {
@@ -111,7 +97,7 @@ const VehicleInformation = ({ onClick, onClose }: IVehicleInformation) => {
                         </Grid>
                         <Container>
                             <Typography id="modal-modal-description" sx={{ mt: 2, fontWeight: '600' }}>
-                                Yêu cầu xe<span className={classes.colorSpan}>#1234567</span>
+                                Yêu cầu xe<span className={classes.colorSpan}>{request.requestid}</span>
                             </Typography>
                             <Grid container ml={2} mb={2}>
                                 <Grid item xs={4}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import Box from '@mui/material/Box';
 import TableBody from '@mui/material/TableBody';
@@ -17,67 +17,44 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import { requestCarrierRequest } from "../../store/carrier/reducer";
-import { useAppDispatch } from "../../hooks/hook";
+import { getRequestCarrierRequest, requestCarrierRequest } from "../../store/carrier/reducer";
+import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 
 export interface IRequestType {
     id: number;
-    requestId: string;
-    routeId: string;
-    startLocation: string;
-    startTime: string;
-    endTime: string;
-    vehicleType: string;
-    vehicleNumber: string;
+    requestid: string;
+    routeid: string;
+    startlocation: string;
+    starttime: string;
+    endtime: string;
+    vehicletype: string;
+    vehiclenumber: string;
     status: string;
 }
 
 function createData(
     id: number,
-    requestId: string,
-    routeId: string,
-    startLocation: string,
-    startTime: string,
-    endTime: string,
-    vehicleType: string,
-    vehicleNumber: string,
+    requestid: string,
+    routeid: string,
+    startlocation: string,
+    starttime: string,
+    endtime: string,
+    vehicletype: string,
+    vehiclenumber: string,
     status: string,
 ): IRequestType {
     return {
         id,
-        requestId,
-        routeId,
-        startLocation,
-        startTime,
-        endTime,
-        vehicleType,
-        vehicleNumber,
+        requestid,
+        routeid,
+        startlocation,
+        starttime,
+        endtime,
+        vehicletype,
+        vehiclenumber,
         status,
     };
 }
-
-const rows = [
-    createData(1, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
-    createData(2, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(3, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
-    createData(4, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(5, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(6, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
-    createData(7, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(8, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(9, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(10, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
-    createData(11, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(12, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(13, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Xác nhận"),
-    createData(14, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Chờ duyệt"),
-    createData(15, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(16, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(17, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(18, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(19, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-    createData(20, "#3427", "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "29C-888.88", "Hủy"),
-];
 
 interface HeadCell {
     disablePadding: boolean;
@@ -88,37 +65,37 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
     {
-        id: 'requestId',
+        id: 'requestid',
         numeric: true,
         disablePadding: false,
         label: 'Mã yêu cầu',
     },
     {
-        id: 'startLocation',
+        id: 'startlocation',
         numeric: true,
         disablePadding: false,
         label: 'Kho xuất',
     },
     {
-        id: 'startTime',
+        id: 'starttime',
         numeric: true,
         disablePadding: false,
         label: 'Thời gian bắt đầu',
     },
     {
-        id: 'endTime',
+        id: 'endtime',
         numeric: true,
         disablePadding: false,
         label: 'Thời gian kết thúc',
     },
     {
-        id: 'vehicleType',
+        id: 'vehicletype',
         numeric: true,
         disablePadding: false,
         label: 'Loại xe',
     },
     {
-        id: 'vehicleNumber',
+        id: 'vehiclenumber',
         numeric: true,
         disablePadding: false,
         label: 'Biển số xe',
@@ -172,6 +149,7 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
         </TableHead>
     );
 }
+
 interface TablePaginationActionsProps {
     count: number;
     page: number;
@@ -247,11 +225,21 @@ const ApproverTable = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(8);
     const [requestStatus, setrequestStatus] = React.useState(MessageStatus.initial);
     const [rowId, setRowId] = React.useState('');
+    const [currentRow, setCurrentRow] = React.useState({});
+    const { requests } = useAppSelector(state => state.carrier)
+    const { statusFilter } = useAppSelector(state => state.route)
 
     const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        dispatch(getRequestCarrierRequest({
+            fromDate: "2023-12-05",
+            status: 0
+        }))
+    }, []);
+
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - requests.length) : 0;
 
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
@@ -267,9 +255,10 @@ const ApproverTable = () => {
         setPage(0);
     };
 
-    const handleOpenAccept = (id: string) => {
+    const handleOpenAccept = (row: IRequestType) => {
         setOpenAccept(true);
-        setRowId(id);
+        setCurrentRow(row)
+        setRowId(row.requestid);
     }
     const handleCloseAccept = () => {
         setOpenAccept(false);
@@ -277,7 +266,7 @@ const ApproverTable = () => {
     const handleSaveInformation = (rows: DriverInformation[], plate: string) => {
         setOpenAccept(false)
         dispatch(requestCarrierRequest({
-            routeid: rowId,
+            carrentalid: rowId,
             type: true,
             driverinfo: rows.map(d => ({
                 citizenIdentificationCard: d.cmnd,
@@ -286,23 +275,34 @@ const ApproverTable = () => {
             })),
             vehicleinfo: plate
         }))
-        if (true) {
-            setrequestStatus(MessageStatus.success);
-        }
-        else {
-            setrequestStatus(MessageStatus.error);
-        }
+        dispatch(getRequestCarrierRequest({
+            fromDate: "2023-12-05",
+            status: + statusFilter - 6
+        }))
+        // if (true) {
+        //     setrequestStatus(MessageStatus.success);
+        // }
+        // else {
+        //     setrequestStatus(MessageStatus.error);
+        // }
     };
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = requests.map((n) => n.id);
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
-    const handleCancel = () => {
-        console.log("cc c")
+    const handleCancel = (id: string) => {
+        dispatch(requestCarrierRequest({
+            carrentalid: id,
+            type: false,
+        }))
+        dispatch(getRequestCarrierRequest({
+            fromDate: "2023-12-05",
+            status: + statusFilter - 6
+        }))
     };
 
     const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
@@ -325,8 +325,7 @@ const ApproverTable = () => {
     };
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
-    const visibleRows = React.useMemo(() => rows, []
-    );
+
     // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     //     setRowsPerPage(+event.target.value);
     //     setPage(0);
@@ -334,7 +333,7 @@ const ApproverTable = () => {
 
     return (
         <>
-            {openAccept && <VehicleInformation onClick={handleSaveInformation} onClose={handleCloseAccept} />}
+            {openAccept && <VehicleInformation request={currentRow as IRequestType} onClick={handleSaveInformation} onClose={handleCloseAccept} />}
             <Box sx={{ width: '100%' }} className={classes.tableBox}>
                 <Paper sx={{ width: '100%', mb: 2, boxShadow: 'none' }}>
                     <TableContainer className={classes.tableContainer}
@@ -347,12 +346,12 @@ const ApproverTable = () => {
                             <EnhancedTableHead
                                 numSelected={selected.length}
                                 onSelectAllClick={handleSelectAllClick}
-                                rowCount={rows.length}
+                                rowCount={requests.length}
                             />
                             <TableBody>
                                 {(rowsPerPage > 0
-                                    ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : rows
+                                    ? requests.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : requests
                                 ).map((row, index) => {
                                     const isItemSelected = isSelected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
@@ -378,55 +377,55 @@ const ApproverTable = () => {
                                                 />
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
-                                                <p className={classes.routeId}>
-                                                    {row.requestId}
+                                                <p className={classes.routeid}>
+                                                    {row.requestid}
                                                 </p>
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <p className={classes.warehouse}>
-                                                    {row.startLocation}
+                                                    {row.startlocation}
                                                 </p>
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <p className={classes.Time}>
-                                                    {row.startTime}
+                                                    {row.starttime}
                                                 </p>
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <p className={classes.Time}>
-                                                    {row.endTime}
+                                                    {row.endtime}
                                                 </p>
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <p className={classes.warehouse}>
-                                                    {row.vehicleType}
+                                                    {row.vehicletype}
                                                 </p>
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
-                                                <p className={classes.Time}>{row.vehicleNumber}</p>
+                                                <p className={classes.Time}>{row.vehiclenumber}</p>
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <Button
-                                                    disabled={row.status === "Hủy"}
-                                                    onClick={row.status === "Xác nhận" ? () => { } : () => handleOpenAccept(row.requestId)}
-                                                    variant="outlined"
+                                                    disabled={row.status === "2"}
+                                                    onClick={row.status === "1" ? () => { } : () => handleOpenAccept(row)}
+                                                    variant="contained"
                                                     size="small"
-                                                    sx={row.status === "Xác nhận" ? { textTransform: 'unset', borderRadius: '20px', color: "#37750C", backgroundColor: '#ffff' } : { textTransform: 'unset', borderRadius: '20px', }}
+                                                    sx={row.status === "1" ? { textTransform: 'unset', borderRadius: '20px', color: "#37750C", backgroundColor: '#ffff', cursor: 'not-allowed', boxShadow: 'none', ":hover": { backgroundColor: '#ffff' } } : { textTransform: 'unset', borderRadius: '20px' }}
                                                 >
-                                                    {row.status === "Xác nhận" ? 'Đã xác nhận' : "Xác nhận"}
+                                                    {row.status === "1" ? 'Đã xác nhận' : "Xác nhận"}
                                                 </Button>
 
 
                                             </TableCell>
                                             <TableCell align="left" sx={{ padding: '0' }}>
                                                 <Button
-                                                    disabled={row.status === "Xác nhận"}
-                                                    onClick={row.status === "Hủy" ? () => { } : handleCancel}
+                                                    disabled={row.status === "1"}
+                                                    onClick={row.status === "2" ? () => { } : ()=>handleCancel(row.requestid)}
                                                     variant="outlined"
                                                     color="error"
                                                     size="small"
-                                                    sx={{ textTransform: 'unset', borderRadius: '20px' }}>
-                                                    {row.status === "Hủy" ? "Đã Hủy" : "Hủy yêu cầu"}
+                                                    sx={row.status === "2" ? { textTransform: 'unset', borderRadius: '20px', border: 'none', ":hover": { borderColor: '#ffff' } } : { textTransform: 'unset', borderRadius: '20px' }}>
+                                                    {row.status === "2" ? "Đã Hủy" : "Hủy yêu cầu"}
                                                 </Button>
                                             </TableCell>
 
@@ -457,7 +456,7 @@ const ApproverTable = () => {
                     <TablePagination
                         rowsPerPageOptions={[8, 16, 30, { label: 'All', value: -1 }]}
                         colSpan={3}
-                        count={rows.length}
+                        count={requests.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
@@ -506,7 +505,7 @@ const useStyles = makeStyles(() => ({
         textWrap: "nowrap",
 
     },
-    routeId: {
+    routeid: {
         fontFamily: "Roboto ,sans-serif", /* Body */
         fontSize: "12px",
         fontWeight: 700,

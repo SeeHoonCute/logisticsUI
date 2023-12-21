@@ -14,10 +14,11 @@ export enum MessageStatus {
     error,
 }
 export interface IMessageType {
+    content?: string;
     status: MessageStatus,
     onClick: () => void;
 }
-const Message: React.FC<IMessageType> = ({ status, onClick }: IMessageType) => {
+const Message: React.FC<IMessageType> = ({ content,status, onClick }: IMessageType) => {
     let open = true;
     React.useEffect(() => {
         let time = setTimeout(() => {
@@ -39,7 +40,7 @@ const Message: React.FC<IMessageType> = ({ status, onClick }: IMessageType) => {
         return (
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                    Thành công!!!
+                    {content ?? "Thành công!!!"}
                 </Alert>
             </Snackbar>
         );
@@ -48,7 +49,7 @@ const Message: React.FC<IMessageType> = ({ status, onClick }: IMessageType) => {
         return (
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    Thất bại!!!
+                {content ?? "Thất bại!!!"}
                 </Alert>
             </Snackbar>
         );

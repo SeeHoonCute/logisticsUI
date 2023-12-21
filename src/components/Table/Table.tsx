@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import Box from '@mui/material/Box';
@@ -8,9 +9,16 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { Pagination, Table, Grid } from "@mui/material";
+import { Table, Grid, TablePagination, IconButton, useTheme } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/hook";
 import { setRouteCount, getRouteRequest } from "../../store/route/reducer";
+import FirstPageIcon from '@mui/icons-material/FirstPage';
+import LastPageIcon from '@mui/icons-material/LastPage';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { SET_LIST_SELECT_ROUTE, SET_SELECT_ROUTE, SET_UNSELECT_ROUTE } from "../../store/selected/action";
+import { useSelector } from "react-redux";
+
 
 export interface IRouteType {
     id: number;
@@ -24,29 +32,29 @@ export interface IRouteType {
     licenseplate: string;
 }
 
-function createData(
-    id: number,
-    routeId: string,
-    departureLocationName: string,
-    startTime: string,
-    endTime: string,
-    vehicleType: string,
-    status: string,
-    carrier: string,
-    licenseplate: string
-): IRouteType {
-    return {
-        id,
-        routeId,
-        departureLocationName,
-        startTime,
-        endTime,
-        vehicleType,
-        status,
-        carrier,
-        licenseplate,
-    };
-}
+// function createData(
+//     id: number,
+//     routeId: string,
+//     departureLocationName: string,
+//     startTime: string,
+//     endTime: string,
+//     vehicleType: string,
+//     status: string,
+//     carrier: string,
+//     licenseplate: string
+// ): IRouteType {
+//     return {
+//         id,
+//         routeId,
+//         departureLocationName,
+//         startTime,
+//         endTime,
+//         vehicleType,
+//         status,
+//         carrier,
+//         licenseplate,
+//     };
+// }
 
 // const rows = [
 //     createData(1, "#1234567", "169 Đ. 154, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh", "2002-05-01 00:00:00", "2002-05-01 00:00:00", "Xe tải - 5 tấn - lạnh - 3.3 x 1.6 x 1.6 m", "Duyệt", "Toàn Tín", "29C-888.88"),
@@ -165,27 +173,111 @@ function EnhancedTableHead(props: EnhancedTableHeaderProps) {
         </TableHead>
     );
 }
+interface TablePaginationActionsProps {
+    count: number;
+    page: number;
+    rowsPerPage: number;
+    onPageChange: (
+        event: React.MouseEvent<HTMLButtonElement>,
+        newPage: number,
+    ) => void;
+}
 
+function TablePaginationActions(props: TablePaginationActionsProps) {
+    const theme = useTheme();
+    const { count, page, rowsPerPage, onPageChange } = props;
+    console.log("count: " + count);
+    console.log("row per page: " + rowsPerPage);
+
+    const handleFirstPageButtonClick = (
+        event: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+        onPageChange(event, 0);
+    };
+
+    const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, page - 1);
+    };
+
+    const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, page + 1);
+    };
+
+    const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    };
+
+    return (
+        <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+            <IconButton
+                onClick={handleFirstPageButtonClick}
+                disabled={page === 0}
+                aria-label="first page"
+            >
+                {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+            </IconButton>
+            <IconButton
+                onClick={handleBackButtonClick}
+                disabled={page === 0}
+                aria-label="previous page"
+            >
+                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+            </IconButton>
+            <IconButton
+                onClick={handleNextButtonClick}
+                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                aria-label="next page"
+            >
+                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+            </IconButton>
+            <IconButton
+                onClick={handleLastPageButtonClick}
+                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                aria-label="last page"
+            >
+                {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+            </IconButton>
+        </Box>
+    );
+}
 
 const RouteTable = () => {
     const classes = useStyles();
     const [selected, setSelected] = React.useState<readonly number[]>([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(4);
+    const [rowsPerPage, setRowsPerPage] = React.useState(8);
     const disPatch = useAppDispatch();
     const { routes } = useAppSelector(state => state.route)
+    const listRoute = useAppSelector(store => store.select.listRoute)
 
     useEffect(() => {
         disPatch(getRouteRequest())
     }, [])
 
+    useEffect(() => {
+        if (listRoute.length === 0) {
+            setSelected([]);
+            disPatch(setRouteCount(0, 'null'));
+        }
+    }, [listRoute])
+
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
             const newSelected = routes.map((n) => n.id);
+            const listRouteId = routes.map((n) => n.routeId);
+            disPatch({
+                type: SET_LIST_SELECT_ROUTE,
+                payload: listRouteId
+            })
             setSelected(newSelected);
             disPatch(setRouteCount(newSelected.length, 'null'));
             return;
+        } else {
+            disPatch({
+                type: SET_LIST_SELECT_ROUTE,
+                payload: []
+            })
         }
         setSelected([]);
         disPatch(setRouteCount(0, 'null'));
@@ -207,6 +299,27 @@ const RouteTable = () => {
                 selected.slice(selectedIndex + 1),
             );
         }
+
+        const sl = Array.from(listRoute).indexOf(routeId);
+        if (sl === -1) {
+            console.log("SET ROUTE")
+            const listr = listRoute.push(routeId);
+            disPatch({
+                type: SET_SELECT_ROUTE,
+                payload: listRoute
+            })
+        } else {
+            console.log("Remove")
+            const lr = listRoute.filter((_value: any, index: number) => index !== sl)
+            disPatch({
+                type: SET_SELECT_ROUTE,
+                payload: lr
+            })
+        }
+
+        // const storee = useSelector(state => state.select.list)
+        // console.log({storee})
+
         setSelected(newSelected);
         disPatch(setRouteCount(newSelected.length, routeId));
     };
@@ -219,8 +332,16 @@ const RouteTable = () => {
 
     // const visibleRows = React.useMemo(() => routes, []
     // );
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+    ) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>,) => {
+        // setRowsPerPage(+event.target.value);
+        setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
 
@@ -240,7 +361,10 @@ const RouteTable = () => {
                             rowCount={routes.length}
                         />
                         <TableBody>
-                            {routes.map((row, index) => {
+                            {(rowsPerPage > 0
+                                ? routes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : routes
+                            ).map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -307,7 +431,7 @@ const RouteTable = () => {
                             {emptyRows > 0 && (
                                 <TableRow
                                     style={{
-                                        height: (dense ? 33 : 53) * emptyRows,
+                                        height: 47 * emptyRows,
                                     }}
                                 >
                                     <TableCell colSpan={6} />
@@ -318,7 +442,22 @@ const RouteTable = () => {
                 </TableContainer>
             </Paper>
             <Grid display={"flex"} justifyContent={"center"} item xs={12}>
-                <Pagination count={10} variant="outlined" shape="rounded" />
+                <TablePagination
+                    rowsPerPageOptions={[8, 16, 30, { label: 'All', value: -1 }]}
+                    colSpan={3}
+                    count={routes.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                        inputProps: {
+                            'aria-label': 'Số dòng trên trang:',
+                        },
+                        native: true,
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                />
             </Grid>
             {/* <TablePagination
                 count={rows.length}

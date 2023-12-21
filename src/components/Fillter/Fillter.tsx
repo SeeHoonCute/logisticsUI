@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import { Button, Grid, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -9,7 +9,9 @@ import dist from "../../assets/data/dist.json";
 import ward from "../../assets/data/ward.json";
 import Message, { MessageStatus } from "../Message/Message";
 import { useAppSelector, useAppDispatch } from "../../hooks/hook";
-import { getRouteRequest } from "../../store/route/reducer";
+import { getRouteRequest, getSuggestShippingRequest, resetMessageStatus, setStatusFilter } from "../../store/route/reducer";
+import { changeCarrierRequest, createCarrierRequest, getRequestCarrierRequest } from "../../store/carrier/reducer";
+import { SET_LIST_SELECT_ROUTE } from "../../store/selected/action";
 
 export enum RouteStatus {
 
@@ -26,12 +28,21 @@ const Fillter = () => {
     // const [startTime, setStartTime] = React.useState('');
     // const [endTime, setEndTime] = React.useState('');
     const [statusSelect, setStatusId] = React.useState('');
-    const [routeStatus, setrouteStatus] = React.useState(MessageStatus.initial);
+    //const [routeStatus, setrouteStatus] = React.useState(MessageStatus.initial);
 
     const pathName = window.location.pathname;
-    const iShippingUnit = pathName.includes("shippingUnit");
-    const { routeCount, routeIdSelected } = useAppSelector(state => state.route);
+    const isShippingUnit = pathName.includes("shippingUnit");
+    const { routeCount, routeIdSelected, messageStatus, errorMessage } = useAppSelector(state => state.route);
     const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        if (isShippingUnit && statusSelect==='') {
+            setStatusId('6');
+            dispatch(setStatusFilter('6'));
+        }
+    }, [])
+
+    const listRoute = useAppSelector(store => store.select.listRoute)
 
     //function
     const handleChangeNational = (event: SelectChangeEvent) => {
@@ -39,42 +50,69 @@ const Fillter = () => {
     };
 
     const handleChangeProvince = (event: SelectChangeEvent) => {
-        dispatch(getRouteRequest({
-            data: {
+        if (isShippingUnit) {
+            dispatch(getRequestCarrierRequest({
                 fromDate: "2023-12-05",
-                status: statusSelect === '' ? -3 : +statusSelect - 3,
+                status: 1,
                 location: {
                     countryId: 84,
                     provinceId: +event.target.value,
                 },
             }
-        }))
+            ))
+        } else {
+            dispatch(getRouteRequest({
+                data: {
+                    fromDate: "2023-12-05",
+                    status: statusSelect === '' ? -3 : +statusSelect - 3,
+                    location: {
+                        countryId: 84,
+                        provinceId: +event.target.value,
+                    },
+                }
+            }))
+        }
+
         setProvinceId(event.target.value as string);
         setDistId('');
         setWardId('');
     };
 
     const handleChangeDist = (event: SelectChangeEvent) => {
-        dispatch(getRouteRequest({
-            data: {
+        if (isShippingUnit) {
+            dispatch(getRequestCarrierRequest({
                 fromDate: "2023-12-05",
-                status: statusSelect === '' ? -3 : +statusSelect - 3,
+                status: 1,
                 location: {
                     countryId: 84,
                     provinceId: +provinceId,
                     districtId: +event.target.value,
                 },
             }
-        }))
+            ))
+        } else {
+            dispatch(getRouteRequest({
+                data: {
+                    fromDate: "2023-12-05",
+                    status: 1,
+                    location: {
+                        countryId: 84,
+                        provinceId: +provinceId,
+                        districtId: +event.target.value,
+                    },
+                }
+            }))
+        }
+
         setDistId(event.target.value as string);
         setWardId('');
     };
 
     const handleChangeWard = (event: SelectChangeEvent) => {
-        dispatch(getRouteRequest({
-            data: {
+        if (isShippingUnit) {
+            dispatch(getRequestCarrierRequest({
                 fromDate: "2023-12-05",
-                status: statusSelect === '' ? -3 : +statusSelect - 3,
+                status: 1,
                 location: {
                     countryId: 84,
                     provinceId: +provinceId,
@@ -82,46 +120,86 @@ const Fillter = () => {
                     communeId: +event.target.value,
                 },
             }
-        }))
+            ));
+        } else {
+            dispatch(getRouteRequest({
+                data: {
+                    fromDate: "2023-12-05",
+                    status: statusSelect === '' ? -3 : +statusSelect - 3,
+                    location: {
+                        countryId: 84,
+                        provinceId: +provinceId,
+                        districtId: +distId,
+                        communeId: +event.target.value,
+                    },
+                }
+            }))
+        }
         setWardId(event.target.value as string);
+
     };
 
     const handleChangeStatus = (event: SelectChangeEvent) => {
-        setStatusId(event.target.value as string);
-
-        dispatch(getRouteRequest({
-            data: {
+        if (isShippingUnit) {
+            dispatch(getRequestCarrierRequest({
                 fromDate: "2023-12-05",
-                status: +event.target.value - 3,
+                status: +event.target.value - 6,
+                // location: {
+                //     countryId: 84,
+                //     provinceId: +provinceId == 0 ? null : + provinceId,
+                //     districtId: +distId == 0 ? null : + distId,
+                //     communeId: +wardId == 0 ? null : +wardId,
+                // },
             }
-        }))
+            ))
+        } else {
+            dispatch({
+                type: SET_LIST_SELECT_ROUTE,
+                payload: []
+            })
+            dispatch(getRouteRequest({
+                data: {
+                    fromDate: "2023-12-05",
+                    status: +event.target.value - 3,
+                }
+            }))
+        }
+        dispatch(setStatusFilter(event.target.value as string));
+        setStatusId(event.target.value as string);
     }
 
     const handleOpen = () => setOpen(true);
 
-    const handleSaveInformation = () => {
-        setOpen(false)
-        if (true) {
-            setrouteStatus(MessageStatus.success);
-        }
-        else {
-            setrouteStatus(MessageStatus.error);
-        }
+    const handleSaveInformation = (shippingPartnerId: string, reason: string) => {
+        dispatch(changeCarrierRequest({
+            routeId: routeIdSelected,
+            carrierId: shippingPartnerId,
+            reason: reason
+        }))
+        setOpen(false);
     };
 
     const resetSatus = () => {
-        setrouteStatus(MessageStatus.initial);
+        dispatch(resetMessageStatus());
     }
 
     const handleCloseModal = () => {
         setOpen(false);
     };
 
+    const handleSuggestShippings = () => {
+        dispatch(getSuggestShippingRequest(listRoute));
+    }
+
+    const handleCreateCarrierRequest = () => {
+        dispatch(createCarrierRequest(listRoute));
+    }
+
     const classes = useStyles();
     return (
         <>
             {open && <RouteModal onClick={handleSaveInformation} onClose={handleCloseModal} routeIdSelected={routeIdSelected} />}
-            {routeStatus !== MessageStatus.initial && <Message status={routeStatus} onClick={resetSatus} />}
+            {messageStatus !== MessageStatus.initial && <Message content={errorMessage} status={messageStatus} onClick={resetSatus} />}
             <Grid container className={classes.container}>
                 <Grid item xs={2}>
                     <p className={classes.formHeader}>Thời gian</p>
@@ -147,7 +225,7 @@ const Fillter = () => {
                             value={nationId}
                             onChange={handleChangeNational}
                         >
-                            <MenuItem value={1}>Viet Nam</MenuItem>
+                            <MenuItem value={84}>Viet Nam</MenuItem>
                         </Select>
                     </Grid>
                     <Grid className={classes.formItem} item xs={6}>
@@ -196,7 +274,7 @@ const Fillter = () => {
                         </Select>
                     </Grid>
                 </Grid>
-                {iShippingUnit || <Grid item xs={2} className={classes.containerItem}>
+                {isShippingUnit || <Grid item xs={2} className={classes.containerItem}>
                     <p className={classes.formHeader}>Trạng thái</p>
                     <Select
                         className={classes.statusSelect}
@@ -212,7 +290,7 @@ const Fillter = () => {
                         <MenuItem value={5}>Yêu cầu thuê xe đã duyệt</MenuItem>
                     </Select>
                 </Grid>}
-                {iShippingUnit && <Grid item xs={2} className={classes.containerItem}>
+                {isShippingUnit && <Grid item xs={2} className={classes.containerItem}>
                     <p className={classes.formHeader}>Trạng thái</p>
                     <Select
                         className={classes.statusSelect}
@@ -221,14 +299,14 @@ const Fillter = () => {
                         value={statusSelect}
                         onChange={handleChangeStatus}
                     >
-                        <MenuItem value={1}>Chờ duyệt</MenuItem>
-                        <MenuItem value={2}>Xác nhận</MenuItem>
-                        <MenuItem value={3}>Hủy</MenuItem>
+                        <MenuItem value={6}>Chờ duyệt</MenuItem>
+                        <MenuItem value={7}>Xác nhận</MenuItem>
+                        <MenuItem value={8}>Hủy</MenuItem>
                     </Select>
                 </Grid>}
 
                 <Grid item container xs={4}>
-                    {iShippingUnit || <Grid item xs={6} className={classes.nameButton}>
+                    {isShippingUnit || <Grid item xs={6} className={classes.nameButton}>
                         <Grid className={classes.microButton}>
                             <Button
                                 fullWidth
@@ -238,6 +316,7 @@ const Fillter = () => {
                                 variant="contained"
                                 startIcon={<AddOutlinedIcon />}
                                 sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}
+                                onClick={handleSuggestShippings}
                             >
                                 Gợi ý đơn vị vận chuyển
                             </Button>
@@ -257,13 +336,14 @@ const Fillter = () => {
                     </Grid>
                     }
                     <Grid item xs={6} className={classes.nameButton}>
-                        {iShippingUnit || <Grid className={classes.microButton}>
+                        {isShippingUnit || <Grid className={classes.microButton}>
                             <Button
                                 fullWidth
                                 disabled={!(routeCount !== 0 && statusSelect == '2')}
                                 component="label"
                                 variant="contained"
                                 startIcon={<AddOutlinedIcon />}
+                                onClick={handleCreateCarrierRequest}
                                 sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
                                 Tạo yêu cầu vận chuyển
                             </Button>

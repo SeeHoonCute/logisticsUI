@@ -5,14 +5,26 @@ import { makeStyles } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import { Button, Grid, IconButton, MenuItem, Select } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
+import { useAppDispatch, useAppSelector } from '../../hooks/hook';
+import { useEffect, useState } from 'react';
+import { getCarrierInfoRequest } from '../../store/carrier/reducer';
 
 interface IRouteModal {
     routeIdSelected: string;
-    onClick: () => void;
+    onClick: (shippingPartnerId: string, reason: string) => void;
     onClose: () => void;
 }
 
-const RouteModal = ({ onClick, onClose, routeIdSelected}: IRouteModal) => {
+const RouteModal = ({ onClick, onClose, routeIdSelected }: IRouteModal) => {
+    const [reason, setReason] = useState('');
+    const [carrierId, setCarrierId] = useState('');
+    const { carrierInfo } = useAppSelector(state => state.carrier)
+
+    const dispatch = useAppDispatch()
+    useEffect(() =>{
+        dispatch(getCarrierInfoRequest());
+    },[]);
+    
     const classes = useStyles();
     return (
         <Modal
@@ -45,22 +57,22 @@ const RouteModal = ({ onClick, onClose, routeIdSelected}: IRouteModal) => {
                         className={classes.addressSelect}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                    // value={age}
-                    // onChange={handleChange}
+                        value={carrierId}
+                        onChange={(e) => setCarrierId(e.target.value)}
                     >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {carrierInfo.map((carrierInfo) => (
+                            <MenuItem value={carrierInfo.shippingPartnerId}>{carrierInfo.shippingPartnerName}</MenuItem>
+                        ))}
                     </Select>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         Lý do
                     </Typography>
-                    <TextField required fullWidth id="fullWidth" sx={{ mb: 3 }} placeholder="Nhập lý do" />
+                    <TextField value={reason} onChange={(e)=>setReason(e.target.value)} required fullWidth id="fullWidth" sx={{ mb: 3 }} placeholder="Nhập lý do" />
                     <Grid display={"flex"} justifyContent={"center"} className={classes.microButton}>
                         <Button
                             component="label"
                             variant="contained"
-                            onClick={onClick}
+                            onClick={() => onClick(carrierId,reason)}
                             sx={{ textTransform: 'unset', backgroundColor: '#6D31ED' }}>
                             Lưu thông tin
                         </Button>
